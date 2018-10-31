@@ -1,8 +1,8 @@
 # TensorFlow Custom Op
-This is a guide for users who want to write custom c++ op for TensorFlow and distribute the op as a pip package. This repo serves as both a working example of the op building and packaging process, as well as a template/starting point for writing your own ops.
+This is a guide for users who want to write custom c++ op for TensorFlow and distribute the op as a pip package. This repository serves as both a working example of the op building and packaging process, as well as a template/starting point for writing your own ops.
 
 ## Build Example zero_out Op
-If you want to try out the process of building a pip package for custom op, you can use the source code from this repo following the instructions below.
+If you want to try out the process of building a pip package for custom op, you can use the source code from this repository following the instructions below.
 
 ### Setup Docker Container
 You are going to build the op inside a Docker container. Pull the provided Docker image from TensorFlow's Docker hub and start a container.
@@ -14,7 +14,7 @@ You are going to build the op inside a Docker container. Pull the provided Docke
 
 Inside the Docker container, clone this repository. The code in this repository came from the [Adding an op](https://www.tensorflow.org/extend/adding_an_op) guide.
 ```bash
-git clone -b test https://github.com/yifeif/zero_out.git
+git clone -b test https://github.com/tensorflow/custom_op.git
 cd zero_out
 ```
 
@@ -50,45 +50,45 @@ And you should see the op zeroed out all input elements except the first one:
 ```
 
 ## Create and Distribute Custom Op
-Now you are ready to write and distribute your own ops. The example in this repository has done the boilingplate work for setting up build systems and package files needed for creating a pip package. We recommend using this repository as a template. 
+Now you are ready to write and distribute your own ops. The example in this repository has done the boiling plate work for setting up build systems and package files needed for creating a pip package. We recommend using this repository as a template. 
 
 
 ### Template Overview
 First let's go through a quick overview of the folder structure of this template repository.
 ```
 ├── tensorflow_zero_out
-│   ├── cc
-│   │   ├── kernels  # op kernel implementation
-│   │   │   └── zero_out_kernels.cc
-│   │   └── ops  # op interface defination
-│   │       └── zero_out_ops.cc
-│   ├── python
-│   │   ├── ops
-│   │   │   ├── __init__.py
-│   │   │   ├── zero_out_ops.py   # Load and extend the ops in python
-│   │   │   └── zero_out_ops_test.py  # tests for ops
-│   │   └── __init__.py
+│   ├── cc
+│   │   ├── kernels  # op kernel implementation
+│   │   │   └── zero_out_kernels.cc
+│   │   └── ops  # op interface definition
+│   │       └── zero_out_ops.cc
+│   ├── python
+│   │   ├── ops
+│   │   │   ├── __init__.py
+│   │   │   ├── zero_out_ops.py   # Load and extend the ops in python
+│   │   │   └── zero_out_ops_test.py  # tests for ops
+│   │   └── __init__.py
 |   |
-│   ├── BUILD  # BUILD file for all op targets
-│   └── __init__.py  # top level __init__ file that import the custom op
+│   ├── BUILD  # BUILD file for all op targets
+│   └── __init__.py  # top level __init__ file that imports the custom op
 │
 ├── tf  # Set up TensorFlow pip package as external dependency for Bazel
-│   ├── BUILD
-│   ├── BUILD.tpl
-│   └── tf_configure.bzl
+│   ├── BUILD
+│   ├── BUILD.tpl
+│   └── tf_configure.bzl
 |
 ├── BUILD  # top level Bazel BUILD file that contains pip package build target
 ├── build_pip_pkg.sh  # script to build pip package for Bazel and Makefile
 ├── configure.sh  # script to install TensorFlow and setup action_env for Bazel
 ├── LICENSE
 ├── Makefile  # Makefile for building shared library and pip package
-├── setup.py  # files for creating pip package
-├── MANIFEST.in
+├── setup.py  # file for creating pip package
+├── MANIFEST.in  # files for creating pip package
 ├── README.md
 └── WORKSPACE  # Used by Bazel to specify tensorflow pip package as an external dependency
 
 ```
-The op implementation, including both c++ and python code, goes under `tensorflow_zero_out` dir. You will want to replace this directory with the corresponding content of your own ops. `tf` folder contains the code for setting up TensorFlow pip package as an external dependency for Bazel. You don't need to change this folder. To build a pip package for your op, you will also need to update a few files at top level of the template, for example, `setup.py`, `MANIFEST.in` and `build_pip_pkg.sh`.
+The op implementation, including both c++ and python code, goes under `tensorflow_zero_out` dir. You will want to replace this directory with the corresponding content of your own ops. `tf` folder contains the code for setting up TensorFlow pip package as an external dependency for Bazel only. You shouldn't need to change the content of this folder. You also don't need this folder if you are using other build systems, such as Makefile. To build a pip package for your op, you will also need to update a few files at the top level of the template, for example, `setup.py`, `MANIFEST.in` and `build_pip_pkg.sh`.
 
 ### Setup
 First, clone this template repo.
@@ -98,28 +98,28 @@ cd my_op
 ```
 
 #### Docker
-Next you can set up a Docker container using the provided Docker image for builing and testing the ops. The provided Docker image `tensorflow/tensorflow:custom_op` is based on Ubuntu 14.04, and it contains the same versions of tools and libraries used for building the official TensorFlow pip packages. It also comes with Bazel pre-installed. To get the Docker image, run
+Next, set up a Docker container using the provided Docker image for building and testing the ops. The provided Docker image `tensorflow/tensorflow:custom_op` is based on Ubuntu 14.04, and it contains the same versions of tools and libraries used for building the official TensorFlow pip packages. It also comes with Bazel pre-installed. We have seen many cases where dependency version differences and ABI incompatibilities cause the custom op extension users build to not work properly with TensorFlow's released pip packages. Therefore, it is *highly recommended* to use the provided Docker image to build your custom op. To get the Docker image, run
 ```bash
 docker pull tensorflow/tensorflow:custom_op
 ```
 
-You might want to use Docker volumes to map a `work_dir` from host to the container, so that you can edit files on the host, and build with the latest change in the Docker container. To do so, run
+You might want to use Docker volumes to map a `work_dir` from host to the container, so that you can edit files on the host, and build with the latest changes in the Docker container. To do so, run
 ```bash
 docker run -it -v ${PWD}:/working_dir -w /working_dir  tensorflow/tensorflow:custom_op
 ```
 
 #### Run configure.sh
-Last step before starting implementing the ops, you want to set up the build environment. The custom ops will need to depend on TensorFlow headers and shared library libtensorflow_framework.so, which are distributed with TensorFlow official pip package. If you would like to use Bazel to build your ops, you might also want to set a few action_envs so that Bazel can find the installed TensorFlow. We provide a `configure` script that does these for you. Simply run `./confgure.sh` in the docker container and you are good to go.
+Last step before starting implementing the ops, you want to set up the build environment. The custom ops will need to depend on TensorFlow headers and shared library libtensorflow_framework.so, which are distributed with TensorFlow official pip package. If you would like to use Bazel to build your ops, you might also want to set a few action_envs so that Bazel can find the installed TensorFlow. We provide a `configure` script that does these for you. Simply run `./configure.sh` in the docker container and you are good to go.
 
 
 ### Add Op Implementation
-Now you are ready to implement your op. Following the instructions at [Adding a New Op](https://www.tensorflow.org/extend/adding_an_op), add defination of your op interface under `<your_op>/cc/ops/` and kernel implementation under `<your_op>/cc/kernels/`.
+Now you are ready to implement your op. Following the instructions at [Adding a New Op](https://www.tensorflow.org/extend/adding_an_op), add definition of your op interface under `<your_op>/cc/ops/` and kernel implementation under `<your_op>/cc/kernels/`.
 
 
 ### Build and Test Op
 
 #### Bazel
-To build the custom op shared library with Bazel, follow the cc_binary example in [`tensorflow_zero_out/BUILD`](https://github.com/tensorflow/custom_op/blob/master/tensorflow_zero_out/BUILD#L5). You will need to depend on the header files and libtensorflow_framework.so from TensorFlow pip package to build your op. Earlier we mentioned that the template has already setup TensorFlow pip package as an external dependency in `tf` directory, and the pip package is listed as `local_config_tf` in [`WORKSPACE`](https://github.com/tensorflow/custom_op/blob/master/WORKSPACE) file. You can depend your op directly on TensorFlow header files and 'libtensorflow_framework.so' as following:
+To build the custom op shared library with Bazel, follow the cc_binary example in [`tensorflow_zero_out/BUILD`](https://github.com/tensorflow/custom_op/blob/master/tensorflow_zero_out/BUILD#L5). You will need to depend on the header files and libtensorflow_framework.so from TensorFlow pip package to build your op. Earlier we mentioned that the template has already setup TensorFlow pip package as an external dependency in `tf` directory, and the pip package is listed as `local_config_tf` in [`WORKSPACE`](https://github.com/tensorflow/custom_op/blob/master/WORKSPACE) file. Your op can depend directly on TensorFlow header files and 'libtensorflow_framework.so' with the following:
 ```python
     deps = [
         "@local_config_tf//:libtensorflow_framework",
@@ -154,7 +154,7 @@ You can also add Python tests like what we have done in `tensorflow_zero_out/pyt
 
 
 ##### Run Tests with Bazel
-To add the python library and tests targets to Bazel, please follow the examples for `py_library` taget `tensorflow_zero_out:zero_out_ops_py` and `py_test` target `tensorflow_zero_out:zero_out_ops_py_test` in `tensorflow_zero_out/BUILD` file. To run your test with bazel, do the following in Docker container,
+To add the python library and tests targets to Bazel, please follow the examples for `py_library` target `tensorflow_zero_out:zero_out_ops_py` and `py_test` target `tensorflow_zero_out:zero_out_ops_py_test` in `tensorflow_zero_out/BUILD` file. To run your test with bazel, do the following in Docker container,
 
 ```bash
 bazel test tensorflow_zero_out:zero_out_ops_py_test
@@ -183,7 +183,7 @@ You can use either Bazel or Makefile to build the pip package.
 
 
 #### Build with Bazel
-You can find the target for pip package in the top level `BUILD` file. Inside the data list of this `build_pip_pkg` target, you want to include the python library target ` //tensorflow_zero_out:zero_out_py` in addtion to the top level files. To build the pip package builder, run the following command in Docker container,
+You can find the target for pip package in the top level `BUILD` file. Inside the data list of this `build_pip_pkg` target, you want to include the python library target ` //tensorflow_zero_out:zero_out_py` in addition to the top level files. To build the pip package builder, run the following command in Docker container,
 ```bash
 bazel build :build_pip_pkg
 ```
@@ -194,7 +194,7 @@ bazel-bin/build_pip_pkg artifacts
 ```
 
 #### Build with make
-Builing with make also invoke the same `build_pip_pkg.sh` script. You can run,
+Building with make also invoke the same `build_pip_pkg.sh` script. You can run,
 ```bash
 make pip_pkg
 ```
@@ -209,3 +209,5 @@ python -c "import tensorflow as tf;import tensorflow_zero_out as zero_out_module
 
 ### Publish PIP Package
 Once your pip package has been thoroughly tested, you can distribute your package by uploading your package to the Python Package Index. Please follow the [official instruction](https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives) from Pypi.
+
+
