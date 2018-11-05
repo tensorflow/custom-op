@@ -8,13 +8,13 @@ If you want to try out the process of building a pip package for custom op, you 
 You are going to build the op inside a Docker container. Pull the provided Docker image from TensorFlow's Docker hub and start a container.
 
 ```bash
-  docker pull tensorflow/tensorflow:custom_op
-  docker run -it tensorflow/tensorflow:custom_op /bin/bash
+  docker pull tensorflow/tensorflow:custom-op
+  docker run -it tensorflow/tensorflow:custom-op /bin/bash
 ```
 
 Inside the Docker container, clone this repository. The code in this repository came from the [Adding an op](https://www.tensorflow.org/extend/adding_an_op) guide.
 ```bash
-git clone -b test https://github.com/tensorflow/custom_op.git
+git clone -b test https://github.com/tensorflow/custom-op.git
 cd zero_out
 ```
 
@@ -93,19 +93,19 @@ The op implementation, including both c++ and python code, goes under `tensorflo
 ### Setup
 First, clone this template repo.
 ```bash
-git clone -b test https://github.com/tensorflow/custom_op.git my_op
+git clone -b test https://github.com/tensorflow/custom-op.git my_op
 cd my_op
 ```
 
 #### Docker
-Next, set up a Docker container using the provided Docker image for building and testing the ops. The provided Docker image `tensorflow/tensorflow:custom_op` is based on Ubuntu 14.04, and it contains the same versions of tools and libraries used for building the official TensorFlow pip packages. It also comes with Bazel pre-installed. We have seen many cases where dependency version differences and ABI incompatibilities cause the custom op extension users build to not work properly with TensorFlow's released pip packages. Therefore, it is *highly recommended* to use the provided Docker image to build your custom op. To get the Docker image, run
+Next, set up a Docker container using the provided Docker image for building and testing the ops. The provided Docker image `tensorflow/tensorflow:custom-op` is based on Ubuntu 14.04, and it contains the same versions of tools and libraries used for building the official TensorFlow pip packages. It also comes with Bazel pre-installed. We have seen many cases where dependency version differences and ABI incompatibilities cause the custom op extension users build to not work properly with TensorFlow's released pip packages. Therefore, it is *highly recommended* to use the provided Docker image to build your custom op. To get the Docker image, run
 ```bash
-docker pull tensorflow/tensorflow:custom_op
+docker pull tensorflow/tensorflow:custom-op
 ```
 
 You might want to use Docker volumes to map a `work_dir` from host to the container, so that you can edit files on the host, and build with the latest changes in the Docker container. To do so, run
 ```bash
-docker run -it -v ${PWD}:/working_dir -w /working_dir  tensorflow/tensorflow:custom_op
+docker run -it -v ${PWD}:/working_dir -w /working_dir  tensorflow/tensorflow:custom-op
 ```
 
 #### Run configure.sh
@@ -119,7 +119,7 @@ Now you are ready to implement your op. Following the instructions at [Adding a 
 ### Build and Test Op
 
 #### Bazel
-To build the custom op shared library with Bazel, follow the cc_binary example in [`tensorflow_zero_out/BUILD`](https://github.com/tensorflow/custom_op/blob/master/tensorflow_zero_out/BUILD#L5). You will need to depend on the header files and libtensorflow_framework.so from TensorFlow pip package to build your op. Earlier we mentioned that the template has already setup TensorFlow pip package as an external dependency in `tf` directory, and the pip package is listed as `local_config_tf` in [`WORKSPACE`](https://github.com/tensorflow/custom_op/blob/master/WORKSPACE) file. Your op can depend directly on TensorFlow header files and 'libtensorflow_framework.so' with the following:
+To build the custom op shared library with Bazel, follow the cc_binary example in [`tensorflow_zero_out/BUILD`](https://github.com/tensorflow/custom-op/blob/master/tensorflow_zero_out/BUILD#L5). You will need to depend on the header files and libtensorflow_framework.so from TensorFlow pip package to build your op. Earlier we mentioned that the template has already setup TensorFlow pip package as an external dependency in `tf` directory, and the pip package is listed as `local_config_tf` in [`WORKSPACE`](https://github.com/tensorflow/custom-op/blob/master/WORKSPACE) file. Your op can depend directly on TensorFlow header files and 'libtensorflow_framework.so' with the following:
 ```python
     deps = [
         "@local_config_tf//:libtensorflow_framework",
@@ -133,13 +133,13 @@ bazel build tensorflow_zero_out:python/ops/_zero_out_ops.so
 ```
 
 #### Makefile
-To build the custom op shared library with make, follow the example in [`Makefile`](https://github.com/tensorflow/custom_op/blob/master/Makefile) for `_zero_out_ops.so` and run the following command in your Docker container:
+To build the custom op shared library with make, follow the example in [`Makefile`](https://github.com/tensorflow/custom-op/blob/master/Makefile) for `_zero_out_ops.so` and run the following command in your Docker container:
 ```bash
 make op
 ```
 
 #### Extend and Test the Op in Python
-Once you have built your custom op shared library, you can follow the example in [`tensorflow_zero_out/python/ops`](https://github.com/tensorflow/custom_op/tree/master/tensorflow_zero_out/python/ops), and instructions [here](https://www.tensorflow.org/extend/adding_an_op#use_the_op_in_python) to create a module in Python for your op. Both guides use TensorFlow API `tf.load_op_library`, which loads the shared library and registers the ops with the TensorFlow framework.
+Once you have built your custom op shared library, you can follow the example in [`tensorflow_zero_out/python/ops`](https://github.com/tensorflow/custom-op/tree/master/tensorflow_zero_out/python/ops), and instructions [here](https://www.tensorflow.org/extend/adding_an_op#use_the_op_in_python) to create a module in Python for your op. Both guides use TensorFlow API `tf.load_op_library`, which loads the shared library and registers the ops with the TensorFlow framework.
 ```python
 from tensorflow.python.framework import load_library
 from tensorflow.python.platform import resource_loader
