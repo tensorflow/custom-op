@@ -27,7 +27,7 @@ from setuptools.dist import Distribution
 
 __version__ = '0.0.1'
 REQUIRED_PACKAGES = [
-    'tensorflow == 1.11.0',
+    'tensorflow >= 1.12.0',
 ]
 project_name = 'tensorflow-zero-out'
 
