@@ -14,7 +14,7 @@ You are going to build the op inside a Docker container. Pull the provided Docke
 
 Inside the Docker container, clone this repository. The code in this repository came from the [Adding an op](https://www.tensorflow.org/extend/adding_an_op) guide.
 ```bash
-git clone -b test https://github.com/tensorflow/custom-op.git
+git clone https://github.com/tensorflow/custom-op.git
 cd zero_out
 ```
 
