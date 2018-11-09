@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-
 """Tests for zero_out ops."""
 from __future__ import absolute_import
 from __future__ import division
@@ -23,10 +22,14 @@ import numpy as np
 from tensorflow.python.platform import test
 from zero_out_ops import zero_out
 
+
 class ZeroOutTest(test.TestCase):
+
   def testZeroOut(self):
-    with self.test_session() as sess:
-      self.assertAllClose(zero_out([[1, 2], [3, 4]]).eval(), np.array([[1, 0], [0, 0]]))
+    with self.test_session():
+      self.assertAllClose(
+          zero_out([[1, 2], [3, 4]]).eval(), np.array([[1, 0], [0, 0]]))
+
 
 if __name__ == '__main__':
   test.main()

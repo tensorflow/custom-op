@@ -1,4 +1,3 @@
-
 # Copyright 2018 The TensorFlow Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +17,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import sys
-
 from setuptools import find_packages
 from setuptools import setup
 from setuptools.dist import Distribution
-
 
 __version__ = '0.0.1'
 REQUIRED_PACKAGES = [
@@ -66,7 +62,7 @@ setup(
         'Topic :: Scientific/Engineering :: Mathematics',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Software Development :: Libraries',
-        ],
+    ],
     license='Apache 2.0',
     keywords='tensorflow custom op machine learning',
 )
