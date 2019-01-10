@@ -26,6 +26,7 @@ if python -c "import tensorflow" &> /dev/null; then
     echo 'using installed tensorflow'
 else
     pip install tensorflow
+    pip install tensorflow_estimator
 fi
 
 TF_CFLAGS=( $(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_compile_flags()))') )
