@@ -1,7 +1,9 @@
 # TensorFlow Custom Op
-This is a guide for users who want to write custom c++ op for TensorFlow and distribute the op as a pip package. This repository serves as both a working example of the op building and packaging process, as well as a template/starting point for writing your own ops.
+This is a guide for users who want to write custom c++ op for TensorFlow and distribute the op as a pip package. This repository serves as both a working example of the op building and packaging process, as well as a template/starting point for writing your own ops. The way this repository is set up allow you to build your custom ops from TensorFlow's pip package instead of building TensorFlow from scratch. This guarantee that the shared library you build will work with TensorFlow's pip packages.
 
-## Build Example zero_out Op
+This guide including example for cpu and gpu ops. 
+
+## Build Example zero_out Op (CPU only)
 If you want to try out the process of building a pip package for custom op, you can use the source code from this repository following the instructions below.
 
 ### Setup Docker Container
@@ -49,14 +51,14 @@ And you should see the op zeroed out all input elements except the first one:
  [0 0]]
 ```
 
-## Create and Distribute Custom Op
+## Create and Distribute Custom Ops
 Now you are ready to write and distribute your own ops. The example in this repository has done the boiling plate work for setting up build systems and package files needed for creating a pip package. We recommend using this repository as a template. 
 
 
 ### Template Overview
 First let's go through a quick overview of the folder structure of this template repository.
 ```
-├── tensorflow_zero_out
+├── tensorflow_zero_out  # A CPU only op
 │   ├── cc
 │   │   ├── kernels  # op kernel implementation
 │   │   │   └── zero_out_kernels.cc
@@ -72,6 +74,24 @@ First let's go through a quick overview of the folder structure of this template
 │   ├── BUILD  # BUILD file for all op targets
 │   └── __init__.py  # top level __init__ file that imports the custom op
 │
+├── tensorflow_time_two  # A GPU op
+│   ├── cc
+│   │   ├── kernels  # op kernel implementation
+│   │   │   |── time_two.h
+│   │   │   |── time_two_kernels.cc
+│   │   │   └── time_two_kernels.cu.cc  # GPU kernel
+│   │   └── ops  # op interface definition
+│   │       └── time_two_ops.cc
+│   ├── python
+│   │   ├── ops
+│   │   │   ├── __init__.py
+│   │   │   ├── time_two_ops.py   # Load and extend the ops in python
+│   │   │   └── time_two_ops_test.py  # tests for ops
+│   │   └── __init__.py
+|   |
+│   ├── BUILD  # BUILD file for all op targets
+│   └── __init__.py  # top level __init__ file that imports the custom op
+|
 ├── tf  # Set up TensorFlow pip package as external dependency for Bazel
 │   ├── BUILD
 │   ├── BUILD.tpl
@@ -88,7 +108,7 @@ First let's go through a quick overview of the folder structure of this template
 └── WORKSPACE  # Used by Bazel to specify tensorflow pip package as an external dependency
 
 ```
-The op implementation, including both c++ and python code, goes under `tensorflow_zero_out` dir. You will want to replace this directory with the corresponding content of your own ops. `tf` folder contains the code for setting up TensorFlow pip package as an external dependency for Bazel only. You shouldn't need to change the content of this folder. You also don't need this folder if you are using other build systems, such as Makefile. To build a pip package for your op, you will also need to update a few files at the top level of the template, for example, `setup.py`, `MANIFEST.in` and `build_pip_pkg.sh`.
+The op implementation, including both c++ and python code, goes under `tensorflow_zero_out` dir for CPU only ops, or `tensorflow_time_twp` dir for GPU ops. You will want to replace either directory with the corresponding content of your own ops. `tf` folder contains the code for setting up TensorFlow pip package as an external dependency for Bazel only. You shouldn't need to change the content of this folder. You also don't need this folder if you are using other build systems, such as Makefile. To build a pip package for your op, you will also need to update a few files at the top level of the template, for example, `setup.py`, `MANIFEST.in` and `build_pip_pkg.sh`.
 
 ### Setup
 First, clone this template repo.
@@ -98,14 +118,24 @@ cd my_op
 ```
 
 #### Docker
-Next, set up a Docker container using the provided Docker image for building and testing the ops. The provided Docker image `tensorflow/tensorflow:custom-op` is based on Ubuntu 14.04, and it contains the same versions of tools and libraries used for building the official TensorFlow pip packages. It also comes with Bazel pre-installed. We have seen many cases where dependency version differences and ABI incompatibilities cause the custom op extension users build to not work properly with TensorFlow's released pip packages. Therefore, it is *highly recommended* to use the provided Docker image to build your custom op. To get the Docker image, run
+Next, set up a Docker container using the provided Docker image for building and testing the ops. The provided Docker images `tensorflow/tensorflow:custom-op` and `tensorflow/tensorflow:custom-op-gpu` are based on Ubuntu 14.04, and it contains the same versions of tools and libraries used for building the official TensorFlow pip packages. It also comes with Bazel pre-installed. We have seen many cases where dependency version differences and ABI incompatibilities cause the custom op extension users build to not work properly with TensorFlow's released pip packages. Therefore, it is *highly recommended* to use the provided Docker image to build your custom op. To get the CPU Docker image, run
 ```bash
 docker pull tensorflow/tensorflow:custom-op
 ```
 
-You might want to use Docker volumes to map a `work_dir` from host to the container, so that you can edit files on the host, and build with the latest changes in the Docker container. To do so, run
+For GPU, run 
+```bash
+docker pull tensorflow/tensorflow:custom-op-gpu
+```
+
+You might want to use Docker volumes to map a `work_dir` from host to the container, so that you can edit files on the host, and build with the latest changes in the Docker container. To do so, run the following for CPU
 ```bash
 docker run -it -v ${PWD}:/working_dir -w /working_dir  tensorflow/tensorflow:custom-op
+```
+
+For GPU, you want to use `nvidia-docker`:
+```bash
+docker run --runtime=nvidia --privileged  -it -v ${PWD}:/working_dir -w /working_dir  tensorflow/tensorflow:custom-op
 ```
 
 #### Run configure.sh
@@ -116,7 +146,7 @@ Last step before starting implementing the ops, you want to set up the build env
 Now you are ready to implement your op. Following the instructions at [Adding a New Op](https://www.tensorflow.org/extend/adding_an_op), add definition of your op interface under `<your_op>/cc/ops/` and kernel implementation under `<your_op>/cc/kernels/`.
 
 
-### Build and Test Op
+### Build and Test CPU Op
 
 #### Bazel
 To build the custom op shared library with Bazel, follow the cc_binary example in [`tensorflow_zero_out/BUILD`](https://github.com/tensorflow/custom-op/blob/master/tensorflow_zero_out/BUILD#L5). You will need to depend on the header files and libtensorflow_framework.so from TensorFlow pip package to build your op. Earlier we mentioned that the template has already setup TensorFlow pip package as an external dependency in `tf` directory, and the pip package is listed as `local_config_tf` in [`WORKSPACE`](https://github.com/tensorflow/custom-op/blob/master/WORKSPACE) file. Your op can depend directly on TensorFlow header files and 'libtensorflow_framework.so' with the following:
@@ -159,10 +189,55 @@ To add the python library and tests targets to Bazel, please follow the examples
 ```bash
 bazel test tensorflow_zero_out:zero_out_ops_py_test
 ```
-Or run all tests with
+
+##### Run Tests with Make
+To add the test target to make, please follow the example in `Makefile`. To run your python test, simply run the following in Docker container,
+```bash
+make test_zero_out
+```
+
+### Build and Test CPU Op
+
+#### Bazel
+To build the custom op shared library with Bazel, follow the cc_binary example in [`tensorflow_zero_out/BUILD`](https://github.com/tensorflow/custom-op/blob/master/tensorflow_zero_out/BUILD#L5). You will need to depend on the header files and libtensorflow_framework.so from TensorFlow pip package to build your op. Earlier we mentioned that the template has already setup TensorFlow pip package as an external dependency in `tf` directory, and the pip package is listed as `local_config_tf` in [`WORKSPACE`](https://github.com/tensorflow/custom-op/blob/master/WORKSPACE) file. Your op can depend directly on TensorFlow header files and 'libtensorflow_framework.so' with the following:
+```python
+    deps = [
+        "@local_config_tf//:libtensorflow_framework",
+        "@local_config_tf//:tf_header_lib",
+    ],
+```
+
+You will need to keep both above dependencies for your op. To build the shared library with Bazel, run the following command in your Docker container
+```bash
+bazel build tensorflow_zero_out:python/ops/_zero_out_ops.so
+```
+
+#### Makefile
+To build the custom op shared library with make, follow the example in [`Makefile`](https://github.com/tensorflow/custom-op/blob/master/Makefile) for `_zero_out_ops.so` and run the following command in your Docker container:
+```bash
+make op
+```
+
+#### Extend and Test the Op in Python
+Once you have built your custom op shared library, you can follow the example in [`tensorflow_zero_out/python/ops`](https://github.com/tensorflow/custom-op/tree/master/tensorflow_zero_out/python/ops), and instructions [here](https://www.tensorflow.org/extend/adding_an_op#use_the_op_in_python) to create a module in Python for your op. Both guides use TensorFlow API `tf.load_op_library`, which loads the shared library and registers the ops with the TensorFlow framework.
+```python
+from tensorflow.python.framework import load_library
+from tensorflow.python.platform import resource_loader
+
+_zero_out_ops = load_library.load_op_library(
+    resource_loader.get_path_to_datafile('_zero_out_ops.so'))
+zero_out = _zero_out_ops.zero_out
+
+```
+
+You can also add Python tests like what we have done in `tensorflow_zero_out/python/ops/zero_out_ops_test.py` to check that your op is working as intended.
+
+
+##### Run Tests with Bazel
+To add the python library and tests targets to Bazel, please follow the examples for `py_library` target `tensorflow_zero_out:zero_out_ops_py` and `py_test` target `tensorflow_zero_out:zero_out_ops_py_test` in `tensorflow_zero_out/BUILD` file. To run your test with bazel, do the following in Docker container,
 
 ```bash
-bazel test tensorflow_zero_out:all
+bazel test tensorflow_zero_out:zero_out_ops_py_test
 ```
 
 ##### Run Tests with Make
@@ -170,6 +245,49 @@ To add the test target to make, please follow the example in `Makefile`. To run 
 ```bash
 make test
 ```
+
+### Build and Test GPU Op
+
+#### Bazel
+To build the custom GPU op shared library with Bazel, follow the cc_binary example in [`tensorflow_time_two/BUILD`](https://github.com/tensorflow/custom-op/blob/master/tensorflow_time_two/BUILD#L29). Similar to CPU custom ops, you can directly depend on TensorFlow header files and 'libtensorflow_framework.so' with the following:
+```python
+    deps = [
+        "@local_config_tf//:libtensorflow_framework",
+        "@local_config_tf//:tf_header_lib",
+    ],
+```
+
+Additionally, when you ran configure inside the GPU container, `config=cuda` will be set for bazel command, which will also automatically include cuda shared library and cuda headers as part of the dependencies only for GPU version of the op: `if_cuda_is_configured([":cuda",  "@local_config_cuda//cuda:cuda_headers"])`.
+
+To build the shared library with Bazel, run the following command in your Docker container
+```bash
+bazel build tensorflow_time_two:python/ops/_time_two_ops.so
+```
+
+#### Makefile
+To build the custom op shared library with make, follow the example in [`Makefile`](https://github.com/tensorflow/custom-op/blob/master/Makefile) for `_time_two_ops.so` and run the following command in your Docker container:
+```bash
+make time_two_op
+```
+
+#### Extend and Test the Op in Python
+Once you have built your custom op shared library, you can follow the example in [`tensorflow_time_two/python/ops`](https://github.com/tensorflow/custom-op/tree/master/tensorflow_time_two/python/ops), and instructions [here](https://www.tensorflow.org/extend/adding_an_op#use_the_op_in_python) to create a module in Python for your op. This part is the same as CPU custom op as shown above.
+
+
+##### Run Tests with Bazel
+Similar to CPU custom op, to run your test with bazel, do the following in Docker container,
+
+```bash
+bazel test tensorflow_time_two:time_two_ops_py_test
+```
+
+##### Run Tests with Make
+To add the test target to make, please follow the example in `Makefile`. To run your python test, simply run the following in Docker container,
+```bash
+make time_two_test
+```
+
+
 
 
 ### Build PIP Package
