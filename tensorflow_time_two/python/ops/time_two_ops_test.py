@@ -20,7 +20,10 @@ from __future__ import print_function
 import numpy as np
 
 from tensorflow.python.platform import test
-from time_two_ops import time_two
+try:
+  from tensorflow_time_two.python.ops import time_two_ops
+except ImportError:
+  import time_two_ops
 
 
 class TimeTwoTest(test.TestCase):
@@ -28,7 +31,7 @@ class TimeTwoTest(test.TestCase):
   def testTimeTwo(self):
     with self.test_session():
       self.assertAllClose(
-          time_two([[1, 2], [3, 4]]).eval(), np.array([[2, 4], [6, 8]]))
+          time_two_ops.time_two([[1, 2], [3, 4]]).eval(), np.array([[2, 4], [6, 8]]))
 
 
 if __name__ == '__main__':
