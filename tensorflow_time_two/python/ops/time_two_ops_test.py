@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Tests for zero_out ops."""
+"""Tests for time_two ops."""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -21,17 +21,17 @@ import numpy as np
 
 from tensorflow.python.platform import test
 try:
-  from tensorflow_zero_out.python.ops.zero_out_ops import zero_out
+  from tensorflow_time_two.python.ops import time_two_ops
 except ImportError:
-  from zero_out_ops import zero_out
+  import time_two_ops
 
 
-class ZeroOutTest(test.TestCase):
+class TimeTwoTest(test.TestCase):
 
-  def testZeroOut(self):
+  def testTimeTwo(self):
     with self.test_session():
       self.assertAllClose(
-          zero_out([[1, 2], [3, 4]]).eval(), np.array([[1, 0], [0, 0]]))
+          time_two_ops.time_two([[1, 2], [3, 4]]).eval(), np.array([[2, 4], [6, 8]]))
 
 
 if __name__ == '__main__':
