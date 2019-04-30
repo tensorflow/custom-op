@@ -196,56 +196,6 @@ To add the test target to make, please follow the example in `Makefile`. To run 
 make test_zero_out
 ```
 
-### Build and Test CPU Op
-
-#### Bazel
-To build the custom op shared library with Bazel, follow the cc_binary example in [`tensorflow_zero_out/BUILD`](https://github.com/tensorflow/custom-op/blob/master/tensorflow_zero_out/BUILD#L5). You will need to depend on the header files and libtensorflow_framework.so from TensorFlow pip package to build your op. Earlier we mentioned that the template has already setup TensorFlow pip package as an external dependency in `tf` directory, and the pip package is listed as `local_config_tf` in [`WORKSPACE`](https://github.com/tensorflow/custom-op/blob/master/WORKSPACE) file. Your op can depend directly on TensorFlow header files and 'libtensorflow_framework.so' with the following:
-```python
-    deps = [
-        "@local_config_tf//:libtensorflow_framework",
-        "@local_config_tf//:tf_header_lib",
-    ],
-```
-
-You will need to keep both above dependencies for your op. To build the shared library with Bazel, run the following command in your Docker container
-```bash
-bazel build tensorflow_zero_out:python/ops/_zero_out_ops.so
-```
-
-#### Makefile
-To build the custom op shared library with make, follow the example in [`Makefile`](https://github.com/tensorflow/custom-op/blob/master/Makefile) for `_zero_out_ops.so` and run the following command in your Docker container:
-```bash
-make op
-```
-
-#### Extend and Test the Op in Python
-Once you have built your custom op shared library, you can follow the example in [`tensorflow_zero_out/python/ops`](https://github.com/tensorflow/custom-op/tree/master/tensorflow_zero_out/python/ops), and instructions [here](https://www.tensorflow.org/extend/adding_an_op#use_the_op_in_python) to create a module in Python for your op. Both guides use TensorFlow API `tf.load_op_library`, which loads the shared library and registers the ops with the TensorFlow framework.
-```python
-from tensorflow.python.framework import load_library
-from tensorflow.python.platform import resource_loader
-
-_zero_out_ops = load_library.load_op_library(
-    resource_loader.get_path_to_datafile('_zero_out_ops.so'))
-zero_out = _zero_out_ops.zero_out
-
-```
-
-You can also add Python tests like what we have done in `tensorflow_zero_out/python/ops/zero_out_ops_test.py` to check that your op is working as intended.
-
-
-##### Run Tests with Bazel
-To add the python library and tests targets to Bazel, please follow the examples for `py_library` target `tensorflow_zero_out:zero_out_ops_py` and `py_test` target `tensorflow_zero_out:zero_out_ops_py_test` in `tensorflow_zero_out/BUILD` file. To run your test with bazel, do the following in Docker container,
-
-```bash
-bazel test tensorflow_zero_out:zero_out_ops_py_test
-```
-
-##### Run Tests with Make
-To add the test target to make, please follow the example in `Makefile`. To run your python test, simply run the following in Docker container,
-```bash
-make test
-```
-
 ### Build and Test GPU Op
 
 #### Bazel
