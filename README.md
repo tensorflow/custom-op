@@ -97,6 +97,12 @@ First let's go through a quick overview of the folder structure of this template
 │   ├── BUILD.tpl
 │   └── tf_configure.bzl
 |
+├── gpu  # Set up crosstool and CUDA libraries for Nvidia GPU, only needed for GPU ops
+│   ├── crosstool/
+│   ├── cuda/
+│   ├── BUILD
+│   └── cuda_configure.bzl
+|
 ├── BUILD  # top level Bazel BUILD file that contains pip package build target
 ├── build_pip_pkg.sh  # script to build pip package for Bazel and Makefile
 ├── configure.sh  # script to install TensorFlow and setup action_env for Bazel
