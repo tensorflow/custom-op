@@ -113,7 +113,7 @@ The op implementation, including both c++ and python code, goes under `tensorflo
 ### Setup
 First, clone this template repo.
 ```bash
-git clone -b test https://github.com/tensorflow/custom-op.git my_op
+git clone https://github.com/tensorflow/custom-op.git my_op
 cd my_op
 ```
 
