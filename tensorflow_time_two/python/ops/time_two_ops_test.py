@@ -19,7 +19,9 @@ from __future__ import print_function
 
 import numpy as np
 
+from tensorflow.python.framework import ops
 from tensorflow.python.platform import test
+from tensorflow.python.framework import test_util
 try:
   from tensorflow_time_two.python.ops import time_two_ops
 except ImportError:
@@ -28,10 +30,12 @@ except ImportError:
 
 class TimeTwoTest(test.TestCase):
 
+  @test_util.run_gpu_only
   def testTimeTwo(self):
     with self.test_session():
-      self.assertAllClose(
-          time_two_ops.time_two([[1, 2], [3, 4]]).eval(), np.array([[2, 4], [6, 8]]))
+      with ops.device("/gpu:0"):
+        self.assertAllClose(
+            time_two_ops.time_two([[1, 2], [3, 4]]).eval(), np.array([[2, 4], [6, 8]]))
 
 
 if __name__ == '__main__':
