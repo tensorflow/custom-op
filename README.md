@@ -135,7 +135,7 @@ docker run -it -v ${PWD}:/working_dir -w /working_dir  tensorflow/tensorflow:cus
 
 For GPU, you want to use `nvidia-docker`:
 ```bash
-docker run --runtime=nvidia --privileged  -it -v ${PWD}:/working_dir -w /working_dir  tensorflow/tensorflow:custom-op
+docker run --runtime=nvidia --privileged  -it -v ${PWD}:/working_dir -w /working_dir  tensorflow/tensorflow:custom-op-gpu
 ```
 
 #### Run configure.sh
