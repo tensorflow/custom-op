@@ -80,7 +80,7 @@ fi
 
 
 TF_CFLAGS=( $(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_compile_flags()))') )
-TF_LFLAGS=( $(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_link_flags()))') )
+TF_LFLAGS="$(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_link_flags()))')"
 
 write_to_bazelrc "build:cuda --define=using_cuda=true --define=using_cuda_nvcc=true"
 write_to_bazelrc "build:cuda --crosstool_top=@local_config_cuda//crosstool:toolchain"
@@ -90,7 +90,17 @@ write_to_bazelrc "build -c opt"
 
 
 write_action_env_to_bazelrc "TF_HEADER_DIR" ${TF_CFLAGS:2}
-write_action_env_to_bazelrc "TF_SHARED_LIBRARY_DIR" ${TF_LFLAGS:2}
+SHARED_LIBRARY_DIR=${TF_LFLAGS:2}
+SHARED_LIBRARY_NAME=$(echo $TF_LFLAGS | rev | cut -d":" -f1 | rev)
+if ! [[ $TF_LFLAGS =~ .*:.* ]]; then
+  if [[ "$(uname)" == "Darwin" ]]; then
+    SHARED_LIBRARY_NAME="libtensorflow_framework.dylib"
+  else
+    SHARED_LIBRARY_NAME="libtensorflow_framework.so"
+  fi
+fi
+write_action_env_to_bazelrc "TF_SHARED_LIBRARY_DIR" ${SHARED_LIBRARY_DIR}
+write_action_env_to_bazelrc "TF_SHARED_LIBRARY_NAME" ${SHARED_LIBRARY_NAME}
 write_action_env_to_bazelrc "TF_NEED_CUDA" ${TF_NEED_CUDA}
 
 # TODO(yifeif): do not hardcode path
