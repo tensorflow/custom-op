@@ -58,6 +58,12 @@ Now you are ready to write and distribute your own ops. The example in this repo
 ### Template Overview
 First let's go through a quick overview of the folder structure of this template repository.
 ```
+├── gpu  # Set up crosstool and CUDA libraries for Nvidia GPU, only needed for GPU ops
+│   ├── crosstool/
+│   ├── cuda/
+│   ├── BUILD
+│   └── cuda_configure.bzl
+|
 ├── tensorflow_zero_out  # A CPU only op
 │   ├── cc
 │   │   ├── kernels  # op kernel implementation
@@ -97,12 +103,6 @@ First let's go through a quick overview of the folder structure of this template
 │   ├── BUILD.tpl
 │   └── tf_configure.bzl
 |
-├── gpu  # Set up crosstool and CUDA libraries for Nvidia GPU, only needed for GPU ops
-│   ├── crosstool/
-│   ├── cuda/
-│   ├── BUILD
-│   └── cuda_configure.bzl
-|
 ├── BUILD  # top level Bazel BUILD file that contains pip package build target
 ├── build_pip_pkg.sh  # script to build pip package for Bazel and Makefile
 ├── configure.sh  # script to install TensorFlow and setup action_env for Bazel
@@ -114,7 +114,7 @@ First let's go through a quick overview of the folder structure of this template
 └── WORKSPACE  # Used by Bazel to specify tensorflow pip package as an external dependency
 
 ```
-The op implementation, including both c++ and python code, goes under `tensorflow_zero_out` dir for CPU only ops, or `tensorflow_time_twp` dir for GPU ops. You will want to replace either directory with the corresponding content of your own ops. `tf` folder contains the code for setting up TensorFlow pip package as an external dependency for Bazel only. You shouldn't need to change the content of this folder. You also don't need this folder if you are using other build systems, such as Makefile. To build a pip package for your op, you will also need to update a few files at the top level of the template, for example, `setup.py`, `MANIFEST.in` and `build_pip_pkg.sh`.
+The op implementation, including both c++ and python code, goes under `tensorflow_zero_out` dir for CPU only ops, or `tensorflow_time_two` dir for GPU ops. You will want to replace either directory with the corresponding content of your own ops. `tf` folder contains the code for setting up TensorFlow pip package as an external dependency for Bazel only. You shouldn't need to change the content of this folder. You also don't need this folder if you are using other build systems, such as Makefile. The `gpu` folder contains the code for setting up CUDA libraries and toolchain. You only need the `gpu` folder if you are writing a GPU op and using bazel. To build a pip package for your op, you will also need to update a few files at the top level of the template, for example, `setup.py`, `MANIFEST.in` and `build_pip_pkg.sh`.
 
 ### Setup
 First, clone this template repo.
