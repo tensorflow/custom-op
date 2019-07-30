@@ -35,7 +35,7 @@ class TimeTwoTest(test.TestCase):
     with self.test_session():
       with ops.device("/gpu:0"):
         self.assertAllClose(
-            time_two_ops.time_two([[1, 2], [3, 4]]).eval(), np.array([[2, 4], [6, 8]]))
+            time_two_ops.time_two([[1, 2], [3, 4]]), np.array([[2, 4], [6, 8]]))
 
 
 if __name__ == '__main__':
