@@ -4,7 +4,7 @@ This is a guide for users who want to write custom c++ op for TensorFlow and dis
 This guide including example for both cpu and gpu ops.
 
 Starting from Aug 1, 2019, nightly previews `tf-nightly` and `tf-nightly-gpu`, as well as
-official releases `tensorflow` and `tensorflow-gpu` past version 1.14.1 are now built with a
+official releases `tensorflow` and `tensorflow-gpu` past version 1.14.0 are now built with a
 different environment (Ubuntu 16.04 compared to Ubuntu 14.04, for example) as part of our effort to make TensorFlow's pip pacakges
 manylinux2010 compatible. We have also updated this guide to accommodate both sets of pip packages. Please check the version of TensorFlow pip
 package you are trying to build against, and follow the corresponding guide

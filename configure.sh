@@ -39,7 +39,7 @@ done
 # Check if we are building against manylinux1 or manylinux2010 pip package,
 # default manylinux2010
 while [[ "$PIP_MANYLINUX2010" == "" ]]; do
-  read -p "Does the pip package have tag manylinux2010 (usually the case for nightly release after Aug 1, 2019, or official release 1.14.1 and later)?"\
+  read -p "Does the pip package have tag manylinux2010 (usually the case for nightly release after Aug 1, 2019, or official releases past 1.14.0)?"\
 " Y or enter for manylinux2010, N for manylinux1. [Y/n] " INPUT
   case $INPUT in
     [Yy]* ) echo "Build against pip package with manylinux2010 tag. --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain will be added to bazel command."; PIP_MANYLINUX2010=1;;
