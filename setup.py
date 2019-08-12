@@ -17,9 +17,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from setuptools import Extension
 from setuptools import find_packages
 from setuptools import setup
 from setuptools.dist import Distribution
+
 
 __version__ = '0.0.1'
 REQUIRED_PACKAGES = [
@@ -46,6 +48,7 @@ setup(
     install_requires=REQUIRED_PACKAGES,
     # Add in any packaged data.
     include_package_data=True,
+    ext_modules=[Extension('_foo', ['stub.cc'])],
     zip_safe=False,
     distclass=BinaryDistribution,
     # PyPI package information.
