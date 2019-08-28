@@ -317,3 +317,13 @@ python -c "import tensorflow as tf;import tensorflow_zero_out as zero_out_module
 Once your pip package has been thoroughly tested, you can distribute your package by uploading your package to the Python Package Index. Please follow the [official instruction](https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives) from Pypi.
 
 
+### FAQ
+
+Here are some issues our users have ran into and possible solutions. Feel free to send us a PR to add more entries.
+
+
+| Issue  |  How to? |
+|---|---|
+|  Do I need both the toolchain and the docker image? | Yes, you will need both to get the same setup we use to build TensorFlow's official pip package. |
+|  How do I also create a manylinux2010 binary? | You can use [auditwheel](https://github.com/pypa/auditwheel) version 2.0.0 or newer.  |
+|  What do I do if I get `ValueError: Cannot repair wheel, because required library "libtensorflow_framework.so.1" could not be located` with auditwheel? | Please see [this related issue](https://github.com/tensorflow/tensorflow/issues/31807).  |
