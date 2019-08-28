@@ -47,7 +47,7 @@ With bazel:
 
 With Makefile:
 ```bash
-  make pip_pkg
+  make zero_out_pip_pkg
 ```
 
 ### Install and Test PIP Package
