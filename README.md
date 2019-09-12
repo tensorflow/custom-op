@@ -326,4 +326,4 @@ Here are some issues our users have ran into and possible solutions. Feel free t
 |---|---|
 |  Do I need both the toolchain and the docker image? | Yes, you will need both to get the same setup we use to build TensorFlow's official pip package. |
 |  How do I also create a manylinux2010 binary? | You can use [auditwheel](https://github.com/pypa/auditwheel) version 2.0.0 or newer.  |
-|  What do I do if I get `ValueError: Cannot repair wheel, because required library "libtensorflow_framework.so.1" could not be located` with auditwheel? | Please see [this related issue](https://github.com/tensorflow/tensorflow/issues/31807).  |
+|  What do I do if I get `ValueError: Cannot repair wheel, because required library "libtensorflow_framework.so.1" could not be located` or `ValueError: Cannot repair wheel, because required library "libtensorflow_framework.so.2" could not be located` with auditwheel? | Please see [this related issue](https://github.com/tensorflow/tensorflow/issues/31807).  |
