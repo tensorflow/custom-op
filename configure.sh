@@ -21,6 +21,15 @@ function write_action_env_to_bazelrc() {
   write_to_bazelrc "build --action_env $1=\"$2\""
 }
 
+function is_compatible_with_manylinux2010() {
+  result= `curl https://pypi.tuna.tsinghua.edu.cn/simple/tensorflow/ | grep tensorflow-$1- | grep manylinux2010`
+  if [[ "$result" != "" ]]; then
+    return "YES"
+  else
+    return "NO"
+  fi
+}
+
 # Remove .bazelrc if it already exist
 [ -e .bazelrc ] && rm .bazelrc
 
@@ -55,6 +64,13 @@ if [[ "$TF_NEED_CUDA" == "0" ]]; then
   # Check if it's installed
   if [[ $(pip show tensorflow) == *tensorflow* ]] || [[ $(pip show tf-nightly) == *tf-nightly* ]] ; then
     echo 'Using installed tensorflow'
+    # Check if it's compatible with manylinux2010
+    version=`pip show tensorflow | grep -i version | tr -d ' ' |  awk -F ':' '{print $2}'`
+    if [[ "$PIP_MANYLINUX2010" == "1" ]] && [[ $(is_compatible_with_manylinux2010 $version) == "NO" ]]; then
+      echo "installed tensorflow version $version is not compatible with manylinux2010"
+      echo "upgrade tensorflow version....."
+      pip install --upgrade "tensorflow>=1.15.0rc0" 
+    fi
   else
     # Uninstall GPU version if it is installed.
     if [[ $(pip show tensorflow-gpu) == *tensorflow-gpu* ]]; then
@@ -66,7 +82,13 @@ if [[ "$TF_NEED_CUDA" == "0" ]]; then
     fi
     # Install CPU version
     echo 'Installing tensorflow......\n'
-    pip install tensorflow
+    # If version is not asigned, pip will install the newest release version by default, 
+    # Which may not be compatible with manylinux2010 (eg: tensorflow-1.14.0)
+    if [[ "$PIP_MANYLINUX2010" == "1" ]]; then
+      pip install "tensorflow>=1.15.0rc0" 
+    else
+      pip install "tensorflow<=1.14.0"
+    fi
   fi
 
 else
@@ -74,6 +96,13 @@ else
   # Check if it's installed
    if [[ $(pip show tensorflow-gpu) == *tensorflow-gpu* ]] || [[ $(pip show tf-nightly-gpu) == *tf-nightly-gpu* ]]; then
     echo 'Using installed tensorflow-gpu'
+    # Check if it's compatible with manylinux2010
+    version=`pip show tensorflow-gpu | grep -i version | tr -d ' ' |  awk -F ':' '{print $2}'`
+    if [[ "$PIP_MANYLINUX2010" == "1" ]] && [[ $(is_compatible_with_manylinux2010 $version) == "NO" ]]; then
+      echo "installed tensorflow-gpu version $version is not compatible with manylinux2010"
+      echo "upgrade tensorflow-gpu version....."
+      pip install --upgrade "tensorflow-gpu>=1.15.0rc0" 
+    fi
   else
     # Uninstall CPU version if it is installed.
     if [[ $(pip show tensorflow) == *tensorflow* ]]; then
@@ -83,9 +112,13 @@ else
       echo 'Already have tensorflow non-gpu installed. Uninstalling......\n'
       pip uninstall tf-nightly
     fi
-    # Install CPU version
+    # Install GPU version
     echo 'Installing tensorflow-gpu .....\n'
-    pip install tensorflow-gpu
+    if [[ "$PIP_MANYLINUX2010" == "1" ]]; then
+      pip install "tensorflow-gpu>=1.15.0rc0" 
+    else
+      pip install "tensorflow-gpu<=1.14.0"
+    fi
   fi
 fi
 
