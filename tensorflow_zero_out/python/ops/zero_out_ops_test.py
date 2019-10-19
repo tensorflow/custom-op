@@ -31,7 +31,7 @@ class ZeroOutTest(test.TestCase):
   def testZeroOut(self):
     with self.test_session():
       self.assertAllClose(
-          zero_out([[1, 2], [3, 4]]).eval(), np.array([[1, 0], [0, 0]]))
+          zero_out([[1, 2], [3, 4]]), np.array([[1, 0], [0, 0]]))
 
 
 if __name__ == '__main__':
