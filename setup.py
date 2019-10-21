@@ -27,7 +27,7 @@ __version__ = '0.0.1'
 REQUIRED_PACKAGES = [
     'tensorflow >= 1.12.0',
 ]
-project_name = 'tensorflow-zero-out'
+project_name = 'tensorflow-custom-ops'
 
 
 class BinaryDistribution(Distribution):
@@ -40,7 +40,7 @@ class BinaryDistribution(Distribution):
 setup(
     name=project_name,
     version=__version__,
-    description=('TensorFlow ZeroOut is a simple custom op for TensorFlow'),
+    description=('tensorflow-custom-ops is an examples for custom ops for TensorFlow'),
     author='Google Inc.',
     author_email='opensource@google.com',
     # Contained modules and scripts.
