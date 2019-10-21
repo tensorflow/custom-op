@@ -6,5 +6,6 @@ sh_binary(
         "MANIFEST.in",
         "setup.py",
         "//tensorflow_zero_out:zero_out_py",
+        "//tensorflow_time_two:time_two_py",
     ],
 )
