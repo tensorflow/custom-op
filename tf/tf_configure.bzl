@@ -168,7 +168,6 @@ def _symlink_genrule_for_dir(
             cmd = "cp -f"
             command.append(cmd + ' "%s" "%s"' % (src_files[i], dest))
             outs.append('        "' + dest_dir + dest_files[i] + '",')
-    dest_dir = "abc"
     genrule = _genrule(
         genrule_name,
         " && ".join(command),
