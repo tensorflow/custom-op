@@ -33,19 +33,15 @@ def _execute(
         error_details = None,
         empty_stdout_fine = False):
     """Executes an arbitrary shell command.
-
-    Helper for executes an arbitrary shell command.
-
     Args:
-      repository_ctx: the repository_ctx object.
-      cmdline: list of strings, the command to execute.
-      error_msg: string, a summary of the error if the command fails.
-      error_details: string, details about the error or steps to fix it.
+      repository_ctx: the repository_ctx object
+      cmdline: list of strings, the command to execute
+      error_msg: string, a summary of the error if the command fails
+      error_details: string, details about the error or steps to fix it
       empty_stdout_fine: bool, if True, an empty stdout result is fine, otherwise
-        it's an error.
-
-    Returns:
-      The result of repository_ctx.execute(cmdline).
+        it's an error
+    Return:
+      the result of repository_ctx.execute(cmdline)
     """
     result = repository_ctx.execute(cmdline)
     if result.stderr or not (empty_stdout_fine or result.stdout):
@@ -58,17 +54,9 @@ def _execute(
 
 def _read_dir(repository_ctx, src_dir):
     """Returns a string with all files in a directory.
-
     Finds all files inside a directory, traversing subfolders and following
     symlinks. The returned string contains the full path of all files
     separated by line breaks.
-
-    Args:
-        repository_ctx: the repository_ctx object.
-        src_dir: directory to find files from.
-
-    Returns:
-        A string of all files inside the given dir.
     """
     if _is_windows(repository_ctx):
         src_dir = src_dir.replace("/", "\\")
@@ -146,8 +134,10 @@ def _symlink_genrule_for_dir(
     Returns:
         genrule target that creates the symlinks.
     """
-    if src_dir != None:
+    if src_dir != None:  
         src_dir = _norm_path(src_dir)
+        print("===================")
+        print(src_dir)
         dest_dir = _norm_path(dest_dir)
         files = "\n".join(sorted(_read_dir(repository_ctx, src_dir).splitlines()))
 
@@ -156,6 +146,9 @@ def _symlink_genrule_for_dir(
         src_files = files.splitlines()
     command = []
     outs = []
+    print("!!!!!!!!!!!!!" + dest_dir)
+    print(str(dest_files))
+    
     for i in range(len(dest_files)):
         if dest_files[i] != "":
             # If we have only one file to link we do not want to use the dest_dir, as
@@ -164,8 +157,12 @@ def _symlink_genrule_for_dir(
 
             # Copy the headers to create a sandboxable setup.
             cmd = "cp -f"
-            command.append(cmd + ' "%s" "%s" | true' % (src_files[i], dest))
+            command.append(cmd + ' "%s" "%s"' % (src_files[i], dest))
             outs.append('        "' + dest_dir + dest_files[i] + '",')
+    print(command)
+    print("^^^^^^^^^^^^^^^^")
+    print(str(outs))
+    dest_dir = "abc"
     genrule = _genrule(
         genrule_name,
         " && ".join(command),
@@ -192,7 +189,7 @@ def _tf_pip_impl(repository_ctx):
         "",
         "libtensorflow_framework.so",
         [tf_shared_library_path],
-        ["libtensorflow_framework.so"],
+	["_pywrap_tensorflow_internal.lib"],
     )
 
     _tpl(repository_ctx, "BUILD", {
