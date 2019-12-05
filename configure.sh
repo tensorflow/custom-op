@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+PLATFORM="$(uname -s | tr 'A-Z' 'a-z')"
+
 function write_to_bazelrc() {
   echo "$1" >> .bazelrc
 }
@@ -20,6 +22,24 @@ function write_to_bazelrc() {
 function write_action_env_to_bazelrc() {
   write_to_bazelrc "build --action_env $1=\"$2\""
 }
+
+function is_linux() {
+  [[ "${PLATFORM}" == "linux" ]]
+}
+
+function is_macos() {
+  [[ "${PLATFORM}" == "darwin" ]]
+}
+
+function is_windows() {
+  # On windows, the shell script is actually running in msys
+  [[ "${PLATFORM}" =~ msys_nt*|mingw*|cygwin*|uwin* ]]
+}
+
+function is_ppc64le() {
+  [[ "$(uname -m)" == "ppc64le" ]]
+}
+
 
 # Remove .bazelrc if it already exist
 [ -e .bazelrc ] && rm .bazelrc
@@ -38,16 +58,20 @@ done
 
 # Check if we are building against manylinux1 or manylinux2010 pip package,
 # default manylinux2010
-while [[ "$PIP_MANYLINUX2010" == "" ]]; do
-  read -p "Does the pip package have tag manylinux2010 (usually the case for nightly release after Aug 1, 2019, or official releases past 1.14.0)?"\
-" Y or enter for manylinux2010, N for manylinux1. [Y/n] " INPUT
-  case $INPUT in
-    [Yy]* ) echo "Build against pip package with manylinux2010 tag. --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain will be added to bazel command."; PIP_MANYLINUX2010=1;;
-    [Nn]* ) echo "Build against pip package with manylinux1."; PIP_MANYLINUX2010=0;;
-    "" ) echo "Build against pip package with manylinux2010 tag. --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain will be added to bazel command."; PIP_MANYLINUX2010=1;;
-    * ) echo "Invalid selection: " $INPUT;;
-  esac
-done
+if is_windows; then
+  echo "On windows, skipping toolchain flags.."
+else
+  while [[ "$PIP_MANYLINUX2010" == "" ]]; do
+    read -p "Does the pip package have tag manylinux2010 (usually the case for nightly release after Aug 1, 2019, or official releases past 1.14.0)?"\
+  " Y or enter for manylinux2010, N for manylinux1. [Y/n] " INPUT
+    case $INPUT in
+      [Yy]* ) echo "Build against pip package with manylinux2010 tag. --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain will be added to bazel command."; PIP_MANYLINUX2010=1;;
+      [Nn]* ) echo "Build against pip package with manylinux1."; PIP_MANYLINUX2010=0;;
+      "" ) echo "Build against pip package with manylinux2010 tag. --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain will be added to bazel command."; PIP_MANYLINUX2010=1;;
+      * ) echo "Invalid selection: " $INPUT;;
+    esac
+  done
+fi
 
 # CPU
 if [[ "$TF_NEED_CUDA" == "0" ]]; then
@@ -94,25 +118,43 @@ TF_CFLAGS=( $(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.ge
 TF_LFLAGS="$(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_link_flags()))')"
 
 write_to_bazelrc "build:cuda --define=using_cuda=true --define=using_cuda_nvcc=true"
-if [[ "$PIP_MANYLINUX2010" == "0" ]]; then
-  write_to_bazelrc "build:cuda --crosstool_top=@local_config_cuda//crosstool:toolchain"
+# Add Ubuntu toolchain flags
+if is_linux; then
+  if [[ "$PIP_MANYLINUX2010" == "0" ]]; then
+    write_to_bazelrc "build:cuda --crosstool_top=@local_config_cuda//crosstool:toolchain"
+  fi
+  write_to_bazelrc "build:manylinux2010 --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain"
 fi
-write_to_bazelrc "build:manylinux2010 --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain"
 write_to_bazelrc "build --spawn_strategy=standalone"
 write_to_bazelrc "build --strategy=Genrule=standalone"
 write_to_bazelrc "build -c opt"
 
 
-write_action_env_to_bazelrc "TF_HEADER_DIR" ${TF_CFLAGS:2}
-SHARED_LIBRARY_DIR=${TF_LFLAGS:2}
+if is_windows; then
+  # Use pywrap_tensorflow instead of tensorflow_framework on Windows
+  SHARED_LIBRARY_DIR=${TF_CFLAGS:2:-7}"python"
+else
+  SHARED_LIBRARY_DIR=${TF_LFLAGS:2}
+fi
 SHARED_LIBRARY_NAME=$(echo $TF_LFLAGS | rev | cut -d":" -f1 | rev)
 if ! [[ $TF_LFLAGS =~ .*:.* ]]; then
-  if [[ "$(uname)" == "Darwin" ]]; then
+  if is_macos; then
     SHARED_LIBRARY_NAME="libtensorflow_framework.dylib"
+  elif is_windows; then
+    # Use pywrap_tensorflow's import library on Windows. It is in the same dir as the dll/pyd.
+    SHARED_LIBRARY_NAME="_pywrap_tensorflow_internal.lib"
   else
     SHARED_LIBRARY_NAME="libtensorflow_framework.so"
   fi
 fi
+
+HEADER_DIR=${TF_CFLAGS:2}
+if is_windows; then
+  SHARED_LIBRARY_DIR=${SHARED_LIBRARY_DIR//\\//}
+  SHARED_LIBRARY_NAME=${SHARED_LIBRARY_NAME//\\//}
+  HEADER_DIR=${HEADER_DIR//\\//}
+fi
+write_action_env_to_bazelrc "TF_HEADER_DIR" ${HEADER_DIR}
 write_action_env_to_bazelrc "TF_SHARED_LIBRARY_DIR" ${SHARED_LIBRARY_DIR}
 write_action_env_to_bazelrc "TF_SHARED_LIBRARY_NAME" ${SHARED_LIBRARY_NAME}
 write_action_env_to_bazelrc "TF_NEED_CUDA" ${TF_NEED_CUDA}

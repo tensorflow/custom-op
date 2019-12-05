@@ -1,7 +1,7 @@
 # TensorFlow Custom Op
 This is a guide for users who want to write custom c++ op for TensorFlow and distribute the op as a pip package. This repository serves as both a working example of the op building and packaging process, as well as a template/starting point for writing your own ops. The way this repository is set up allow you to build your custom ops from TensorFlow's pip package instead of building TensorFlow from scratch. This guarantee that the shared library you build will work with TensorFlow's pip packages.
 
-This guide including example for both cpu and gpu ops.
+This guide currently supports Ubuntu and Windows custom ops, and it includes examples for both cpu and gpu ops.
 
 Starting from Aug 1, 2019, nightly previews `tf-nightly` and `tf-nightly-gpu`, as well as
 official releases `tensorflow` and `tensorflow-gpu` past version 1.14.0 are now built with a
@@ -12,6 +12,9 @@ below.
 
 ## Build Example zero_out Op (CPU only)
 If you want to try out the process of building a pip package for custom op, you can use the source code from this repository following the instructions below.
+
+### For Windows Users
+You can skip this section if you are not building on Windows. If you are building custom ops for Windows platform, you will need similar setup as building TensorFlow from source mentioned [here](https://www.tensorflow.org/install/source_windows). Additionally, you can skip all the Docker steps from the instructions below. Otherwise, the bazel commands to build and test custom ops stay the same.
 
 ### Setup Docker Container
 You are going to build the op inside a Docker container. Pull the provided Docker image from TensorFlow's Docker hub and start a container.
