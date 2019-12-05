@@ -196,7 +196,7 @@ def _tf_pip_impl(repository_ctx):
         "",
         "libtensorflow_framework.so",
         [tf_shared_library_path],
-	["_pywrap_tensorflow_internal.lib"],
+        ["_pywrap_tensorflow_internal.lib"  if _is_windows(repository_ctx) else "libtensorflow_framework.so"],
     )
 
     _tpl(repository_ctx, "BUILD", {
