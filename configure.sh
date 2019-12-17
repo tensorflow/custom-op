@@ -62,8 +62,7 @@ if is_windows; then
   echo "On windows, skipping toolchain flags.."
 else
   while [[ "$PIP_MANYLINUX2010" == "" ]]; do
-    read -p "Does the pip package have tag manylinux2010 (usually the case for nightly release after Aug 1, 2019, or official releases past 1.14.0)?"\
-  " Y or enter for manylinux2010, N for manylinux1. [Y/n] " INPUT
+    read -p "Does the pip package have tag manylinux2010 (usually the case for nightly release after Aug 1, 2019, or official releases past 1.14.0)?. Y or enter for manylinux2010, N for manylinux1. [Y/n] " INPUT
     case $INPUT in
       [Yy]* ) PIP_MANYLINUX2010=1;;
       [Nn]* ) PIP_MANYLINUX2010=0;;
@@ -76,9 +75,9 @@ else
     while [[ "$TF_CUDA_VERSION" == "" ]]; do
       read -p "Are you building against TensorFlow 2.1(including RCs) or newer?[Y/n] " INPUT
       case $INPUT in
-        [Yy]* ) echo "Build with the latest manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.0;;
-        [Nn]* ) echo "Build with prvious manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.1;;
-        "" ) echo "Build with the latest manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.0;;
+        [Yy]* ) echo "Build with the latest manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.1;;
+        [Nn]* ) echo "Build with prvious manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.0;;
+        "" ) echo "Build with the latest manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.1;;
         * ) echo "Invalid selection: " $INPUT;;
       esac
     done
