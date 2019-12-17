@@ -72,17 +72,17 @@ else
     esac
   done
 
-if [[ "$PIP_MANYLINUX2010" == "1" ]]; then
-  while [[ "$TF_CUDA_VERSION" == "" ]]; do
-    read -p "Are you building against TensorFlow 2.1(including RCs) or newer?[Y/n] " INPUT
-    case $INPUT in
-      [Yy]* ) echo "Build with the latest manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.0;;
-      [Nn]* ) echo "Build with prvious manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.1;;
-      "" ) echo "Build with the latest manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.0;;
-      * ) echo "Invalid selection: " $INPUT;;
-    esac
-  done
-
+  if [[ "$PIP_MANYLINUX2010" == "1" ]]; then
+    while [[ "$TF_CUDA_VERSION" == "" ]]; do
+      read -p "Are you building against TensorFlow 2.1(including RCs) or newer?[Y/n] " INPUT
+      case $INPUT in
+        [Yy]* ) echo "Build with the latest manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.0;;
+        [Nn]* ) echo "Build with prvious manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.1;;
+        "" ) echo "Build with the latest manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.0;;
+        * ) echo "Invalid selection: " $INPUT;;
+      esac
+    done
+  fi
 fi
 
 
@@ -180,7 +180,7 @@ write_action_env_to_bazelrc "TF_NEED_CUDA" ${TF_NEED_CUDA}
 # TODO(yifeif): do not hardcode path
 if [[ "$TF_NEED_CUDA" == "1" ]]; then
   write_action_env_to_bazelrc "CUDNN_INSTALL_PATH" "/usr/lib/x86_64-linux-gnu"
-  write_action_env_to_bazelrc "TF_CUDA_VERSION" "10.0"
+  write_action_env_to_bazelrc "TF_CUDA_VERSION" ${TF_CUDA_VERSION}
   write_action_env_to_bazelrc "TF_CUDNN_VERSION" "7"
   write_action_env_to_bazelrc "CUDA_TOOLKIT_PATH" "/usr/local/cuda"
   write_to_bazelrc "build --config=cuda"
