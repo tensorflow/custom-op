@@ -62,6 +62,7 @@ if is_windows; then
   echo "On windows, skipping toolchain flags.."
 else
   while [[ "$PIP_MANYLINUX2010" == "" ]]; do
+<<<<<<< HEAD
     read -p "Does the pip package have tag manylinux2010 (usually the case for nightly release after Aug 1, 2019, or official releases past 1.14.0)?"\
   " Y or enter for manylinux2010, N for manylinux1. [Y/n] " INPUT
     case $INPUT in
@@ -72,6 +73,33 @@ else
     esac
   done
 fi
+=======
+    read -p "Does the pip package have tag manylinux2010 (usually the case for nightly release after Aug 1, 2019, or official releases past 1.14.0)?. Y or enter for manylinux2010, N for manylinux1. [Y/n] " INPUT
+    case $INPUT in
+      [Yy]* ) PIP_MANYLINUX2010=1;;
+      [Nn]* ) PIP_MANYLINUX2010=0;;
+      "" ) PIP_MANYLINUX2010=1;;
+      * ) echo "Invalid selection: " $INPUT;;
+    esac
+  done
+
+  if [[ "$PIP_MANYLINUX2010" == "1" ]]; then
+    while [[ "$TF_CUDA_VERSION" == "" ]]; do
+      read -p "Are you building against TensorFlow 2.1(including RCs) or newer?[Y/n] " INPUT
+      case $INPUT in
+        [Yy]* ) echo "Build with the latest manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.1;;
+        [Nn]* ) echo "Build with prvious manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.0;;
+        "" ) echo "Build with the latest manylinux2010 compatible toolchains."; TF_CUDA_VERSION=10.1;;
+        * ) echo "Invalid selection: " $INPUT;;
+      esac
+    done
+  fi
+fi
+
+
+
+
+>>>>>>> 0c792a729f43bff1475eb6ca5d3cdf9e1c6740b2
 
 # CPU
 if [[ "$TF_NEED_CUDA" == "0" ]]; then
@@ -123,7 +151,13 @@ if is_linux; then
   if [[ "$PIP_MANYLINUX2010" == "0" ]]; then
     write_to_bazelrc "build:cuda --crosstool_top=@local_config_cuda//crosstool:toolchain"
   fi
+<<<<<<< HEAD
   write_to_bazelrc "build:manylinux2010 --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain"
+=======
+  write_to_bazelrc "build:manylinux2010cuda100 --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain"
+  write_to_bazelrc "build:manylinux2010cuda101 --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.1:toolchain"
+
+>>>>>>> 0c792a729f43bff1475eb6ca5d3cdf9e1c6740b2
 fi
 write_to_bazelrc "build --spawn_strategy=standalone"
 write_to_bazelrc "build --strategy=Genrule=standalone"
@@ -162,7 +196,7 @@ write_action_env_to_bazelrc "TF_NEED_CUDA" ${TF_NEED_CUDA}
 # TODO(yifeif): do not hardcode path
 if [[ "$TF_NEED_CUDA" == "1" ]]; then
   write_action_env_to_bazelrc "CUDNN_INSTALL_PATH" "/usr/lib/x86_64-linux-gnu"
-  write_action_env_to_bazelrc "TF_CUDA_VERSION" "10.0"
+  write_action_env_to_bazelrc "TF_CUDA_VERSION" ${TF_CUDA_VERSION}
   write_action_env_to_bazelrc "TF_CUDNN_VERSION" "7"
   write_action_env_to_bazelrc "CUDA_TOOLKIT_PATH" "/usr/local/cuda"
   write_to_bazelrc "build --config=cuda"
@@ -171,6 +205,11 @@ fi
 
 
 if [[ "$PIP_MANYLINUX2010" == "1" ]]; then
-  write_to_bazelrc "build --config=manylinux2010"
-  write_to_bazelrc "test --config=manylinux2010"
+  if [[ "$TF_CUDA_VERSION" == "10.0" ]]; then
+    write_to_bazelrc "build --config=manylinux2010cuda100"
+    write_to_bazelrc "test --config=manylinux2010cuda100"
+  else
+    write_to_bazelrc "build --config=manylinux2010cuda101"
+    write_to_bazelrc "test --config=manylinux2010cuda101"
+  fi
 fi
