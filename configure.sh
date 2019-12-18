@@ -62,18 +62,6 @@ if is_windows; then
   echo "On windows, skipping toolchain flags.."
 else
   while [[ "$PIP_MANYLINUX2010" == "" ]]; do
-<<<<<<< HEAD
-    read -p "Does the pip package have tag manylinux2010 (usually the case for nightly release after Aug 1, 2019, or official releases past 1.14.0)?"\
-  " Y or enter for manylinux2010, N for manylinux1. [Y/n] " INPUT
-    case $INPUT in
-      [Yy]* ) echo "Build against pip package with manylinux2010 tag. --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain will be added to bazel command."; PIP_MANYLINUX2010=1;;
-      [Nn]* ) echo "Build against pip package with manylinux1."; PIP_MANYLINUX2010=0;;
-      "" ) echo "Build against pip package with manylinux2010 tag. --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain will be added to bazel command."; PIP_MANYLINUX2010=1;;
-      * ) echo "Invalid selection: " $INPUT;;
-    esac
-  done
-fi
-=======
     read -p "Does the pip package have tag manylinux2010 (usually the case for nightly release after Aug 1, 2019, or official releases past 1.14.0)?. Y or enter for manylinux2010, N for manylinux1. [Y/n] " INPUT
     case $INPUT in
       [Yy]* ) PIP_MANYLINUX2010=1;;
@@ -95,11 +83,6 @@ fi
     done
   fi
 fi
-
-
-
-
->>>>>>> 0c792a729f43bff1475eb6ca5d3cdf9e1c6740b2
 
 # CPU
 if [[ "$TF_NEED_CUDA" == "0" ]]; then
@@ -151,13 +134,8 @@ if is_linux; then
   if [[ "$PIP_MANYLINUX2010" == "0" ]]; then
     write_to_bazelrc "build:cuda --crosstool_top=@local_config_cuda//crosstool:toolchain"
   fi
-<<<<<<< HEAD
-  write_to_bazelrc "build:manylinux2010 --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain"
-=======
   write_to_bazelrc "build:manylinux2010cuda100 --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.0:toolchain"
   write_to_bazelrc "build:manylinux2010cuda101 --crosstool_top=//third_party/toolchains/preconfig/ubuntu16.04/gcc7_manylinux2010-nvcc-cuda10.1:toolchain"
-
->>>>>>> 0c792a729f43bff1475eb6ca5d3cdf9e1c6740b2
 fi
 write_to_bazelrc "build --spawn_strategy=standalone"
 write_to_bazelrc "build --strategy=Genrule=standalone"
