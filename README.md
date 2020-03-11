@@ -1,14 +1,22 @@
 # TensorFlow Custom Op
-This is a guide for users who want to write custom c++ op for TensorFlow and distribute the op as a pip package. This repository serves as both a working example of the op building and packaging process, as well as a template/starting point for writing your own ops. The way this repository is set up allow you to build your custom ops from TensorFlow's pip package instead of building TensorFlow from scratch. This guarantee that the shared library you build will work with TensorFlow's pip packages.
+This is a guide for users who want to write custom c++ op for TensorFlow and distribute the op as a pip package. This repository serves as both a working example of the op building and packaging process, as well as a template/starting point for writing your own ops. The way this repository is set up allow you to build your custom ops from TensorFlow's pip package instead of building TensorFlow from scratch. This guarantee that the shared library you build will be binary compatible with TensorFlow's pip packages.
 
 This guide currently supports Ubuntu and Windows custom ops, and it includes examples for both cpu and gpu ops.
 
 Starting from Aug 1, 2019, nightly previews `tf-nightly` and `tf-nightly-gpu`, as well as
 official releases `tensorflow` and `tensorflow-gpu` past version 1.14.0 are now built with a
 different environment (Ubuntu 16.04 compared to Ubuntu 14.04, for example) as part of our effort to make TensorFlow's pip pacakges
-manylinux2010 compatible. We have also updated this guide to accommodate both sets of pip packages. Please check the version of TensorFlow pip
-package you are trying to build against, and follow the corresponding guide
-below.
+manylinux2010 compatible. To help you building custom ops on linux, here we provide our toolchain in the format of a combination of a Docker image and bazel configurations.  Please check the table below for the Docker image name needed to build your custom ops.
+
+|          |          CPU custom op          |          GPU custom op         |
+|----------|:-------------------------------:|:------------------------------:|
+| TF nightly  |    nightly-custom-op-ubuntu16   | nightly-custom-op-gpu-ubuntu16 |
+| TF >= 2.1   |   2.1.0-custom-op-gpu-ubuntu16  |    2.1.0-custom-op-ubuntu16    |
+| TF 1.5, 2.0 | custom-op-gpu-ubuntu16-cuda10.0 |       custom-op-ubuntu16       |
+| TF <= 1.4   |        custom-op-ubuntu14       |     custom-op-gpu-ubuntu14     |
+Note: all above Docker images have prefix `tensorflow/tensorflow:`
+
+The bazel configurations are included as part of this repository.
 
 ## Build Example zero_out Op (CPU only)
 If you want to try out the process of building a pip package for custom op, you can use the source code from this repository following the instructions below.
