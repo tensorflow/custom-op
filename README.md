@@ -14,6 +14,8 @@ manylinux2010 compatible. To help you building custom ops on linux, here we prov
 | TF >= 2.1   |   2.1.0-custom-op-gpu-ubuntu16  |    2.1.0-custom-op-ubuntu16    |
 | TF 1.5, 2.0 | custom-op-gpu-ubuntu16-cuda10.0 |       custom-op-ubuntu16       |
 | TF <= 1.4   |        custom-op-ubuntu14       |     custom-op-gpu-ubuntu14     |
+
+
 Note: all above Docker images have prefix `tensorflow/tensorflow:`
 
 The bazel configurations are included as part of this repository.
