@@ -17,8 +17,19 @@ set -e
 set -x
 
 PLATFORM="$(uname -s | tr 'A-Z' 'a-z')"
+function is_windows() {
+  if [[ "${PLATFORM}" =~ (cygwin|mingw32|mingw64|msys)_nt* ]]; then
+    true
+  else
+    false
+  fi
+}
 
-PIP_FILE_PREFIX="bazel-bin/build_pip_pkg.runfiles/__main__/"
+if is_windows; then
+  PIP_FILE_PREFIX="bazel-bin/build_pip_pkg.exe.runfiles/__main__/"
+else
+  PIP_FILE_PREFIX="bazel-bin/build_pip_pkg.runfiles/__main__/"
+fi
 
 function main() {
   while [[ ! -z "${1}" ]]; do
