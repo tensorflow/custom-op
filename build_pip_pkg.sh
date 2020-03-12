@@ -41,7 +41,7 @@ function main() {
   # directory.
   mkdir -p ${DEST}
   if [[ ${PLATFORM} == "darwin" ]]; then
-    DEST=$(pwd)/${DEST}
+    DEST=$(pwd -P)/${DEST}
   else
     DEST=$(readlink -f "${DEST}")
   fi
