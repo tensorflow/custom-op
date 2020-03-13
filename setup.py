@@ -25,9 +25,16 @@ from setuptools.dist import Distribution
 
 __version__ = '0.0.1'
 REQUIRED_PACKAGES = [
-    'tensorflow >= 1.12.0',
+    'tensorflow >= 2.1.0',
 ]
 project_name = 'tensorflow-custom-ops'
+
+
+from setuptools.command.install import install
+class InstallPlatlib(install):
+    def finalize_options(self):
+        install.finalize_options(self)
+        self.install_lib = self.install_platlib
 
 
 class BinaryDistribution(Distribution):
@@ -36,6 +43,8 @@ class BinaryDistribution(Distribution):
   def has_ext_modules(self):
     return True
 
+  def is_pure(self):
+    return False
 
 setup(
     name=project_name,
@@ -48,9 +57,9 @@ setup(
     install_requires=REQUIRED_PACKAGES,
     # Add in any packaged data.
     include_package_data=True,
-    ext_modules=[Extension('_foo', ['stub.cc'])],
     zip_safe=False,
     distclass=BinaryDistribution,
+    cmdclass={'install': InstallPlatlib},
     # PyPI package information.
     classifiers=[
         'Development Status :: 4 - Beta',
