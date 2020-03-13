@@ -322,7 +322,7 @@ make pip_pkg
 Before publishing your pip package, test your pip package.
 ```bash
 pip install artifacts/*.whl
-python -c "import tensorflow as tf;import tensorflow_custom_ops as custom_ops_module;print(custom_ops_module.zero_out([[1,2], [3,4]]).eval(session=tf.Session()))"
+python -c "import tensorflow as tf;import tensorflow_zero_out;print(tensorflow_zero_out.zero_out([[1,2], [3,4]]))"
 ```
 
 
