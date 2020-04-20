@@ -23,6 +23,6 @@ REGISTER_OP("TimeTwo")
     .Input("in: T")
     .Output("out: T")
     .SetShapeFn([](::tensorflow::shape_inference::InferenceContext* c) {
-      c->set_output(0, c->input(1));
+      c->set_output(0, c->input(0));
       return Status::OK();
     });
