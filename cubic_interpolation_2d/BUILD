@@ -9,7 +9,7 @@ config_setting(
 
 cc_library(
     name = "types",
-    hdrs = ["cc/types.h"],
+    hdrs = ["cc/platform/types.h"],
 )
 
 
