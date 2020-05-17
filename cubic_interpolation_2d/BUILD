@@ -2,6 +2,11 @@ licenses(["notice"])  # Apache 2.0
 
 package(default_visibility = ["//visibility:public"])
 
+config_setting(
+    name = "windows",
+    constraint_values = ["@bazel_tools//platforms:windows"],
+)
+
 cc_library(
     name = "types",
     hdrs = ["cc/types.h"],
@@ -62,18 +67,6 @@ py_library(
     srcs_version = "PY2AND3",
 )
 
-
-# py_test(
-#     name = "cubic_inerpolation_2d_ops_py_test",
-#     srcs = [
-#         "python/ops/zero_out_ops_test.py"
-#     ],
-#     main = "python/ops/zero_out_ops_test.py",
-#     deps = [
-#         ":zero_out_ops_py",
-#     ],
-#     srcs_version = "PY2AND3",
-# )
 
 py_library(
     name = "cubic_interpolation_2d_py",
