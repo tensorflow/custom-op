@@ -24,6 +24,7 @@ cc_library(
 
 cc_library(
     name = "cubic_interpolation",
+    srcs = ["cc/kernels/cubic_interpolation_kernels.cc"]
     hdrs = ["cc/kernels/cubic_interpolation.h",
     "cc/platform/types.h",
     "cc/kernels/bspline.h"
