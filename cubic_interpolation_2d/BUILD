@@ -17,7 +17,8 @@ cc_library(
     name = "bspline",
     hdrs = ["cc/kernels/bspline.h"],
     deps = [
-        "@org_tensorflow//tensorflow/core:framework_headers_lib",
+        "@local_config_tf//:libtensorflow_framework",
+        "@local_config_tf//:tf_header_lib",
     ],
 )
 
