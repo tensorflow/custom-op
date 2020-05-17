@@ -27,7 +27,7 @@ cc_library(
     srcs = ["cc/kernels/cubic_interpolation_kernels.cc"]
     hdrs = ["cc/kernels/cubic_interpolation.h",
     "cc/platform/types.h",
-    "cc/kernels/bspline.h"
+    "cc/kernels/bspline.h",
     ],
     copts = ["-Iexternal/eigen"],
     deps = [
