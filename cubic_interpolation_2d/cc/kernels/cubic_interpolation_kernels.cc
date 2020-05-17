@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "multidim_image_augmentation/kernels/cubic_interpolation.h"
-#include "multidim_image_augmentation/platform/types.h"
+#include "cubic_interpolation.h"
+#include "types.h"
 #include "tensorflow/core/framework/op_kernel.h"
 #include "tensorflow/core/framework/shape_inference.h"
 

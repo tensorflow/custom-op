@@ -14,7 +14,7 @@
 
 #include <vector>
 
-#include "multidim_image_augmentation/platform/types.h"
+#include "types.h"
 #include "tensorflow/core/framework/op.h"
 #include "tensorflow/core/framework/shape_inference.h"
 

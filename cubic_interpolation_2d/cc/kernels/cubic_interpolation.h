@@ -19,7 +19,7 @@
 #ifndef MULTIDIM_IMAGE_AUGMENTATION_KERNELS_CUBIC_INTERPOLATION_H_
 #define MULTIDIM_IMAGE_AUGMENTATION_KERNELS_CUBIC_INTERPOLATION_H_
 
-#include "multidim_image_augmentation/kernels/bspline.h"
+#include "bspline.h"
 #include "third_party/eigen3/unsupported/Eigen/CXX11/Tensor"
 
 namespace deepmind {
