@@ -14,8 +14,8 @@
 
 // This header brings standard integral types into scope.
 
-#ifndef MULTIDIM_IMAGE_AUGMENTATION_PLATFORM_TYPES_H_
-#define MULTIDIM_IMAGE_AUGMENTATION_PLATFORM_TYPES_H_
+#ifndef CC_TYPES_H_
+#define CC_TYPES_H_
 
 namespace deepmind {
 namespace multidim_image_augmentation {
@@ -38,4 +38,4 @@ typedef unsigned long long uint64;  // NOLINT(runtime/int)
 }  // namespace deepmind
 
 
-#endif  // MULTIDIM_IMAGE_AUGMENTATION_PLATFORM_TYPES_H_
+#endif  // CC_TYPES_H_
