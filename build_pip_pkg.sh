@@ -67,8 +67,7 @@ function main() {
   cp ${PIP_FILE_PREFIX}setup.py "${TMPDIR}"
   cp ${PIP_FILE_PREFIX}MANIFEST.in "${TMPDIR}"
   cp ${PIP_FILE_PREFIX}LICENSE "${TMPDIR}"
-  rsync -avm -L --exclude='*_test.py' ${PIP_FILE_PREFIX}tensorflow_zero_out "${TMPDIR}"
-  rsync -avm -L --exclude='*_test.py' ${PIP_FILE_PREFIX}tensorflow_time_two "${TMPDIR}"
+  rsync -avm -L --exclude='*_test.py' ${PIP_FILE_PREFIX}cubic_interpolation_2d "${TMPDIR}"
 
   pushd ${TMPDIR}
   echo $(date) : "=== Building wheel"
