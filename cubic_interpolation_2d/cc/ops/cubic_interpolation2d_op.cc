@@ -14,7 +14,7 @@
 
 #include <vector>
 
-#include "platform/types.h"
+#include "cc/platform/types.h"
 #include "tensorflow/core/framework/op.h"
 #include "tensorflow/core/framework/shape_inference.h"
 

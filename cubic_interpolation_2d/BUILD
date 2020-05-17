@@ -24,7 +24,10 @@ cc_library(
 
 cc_library(
     name = "cubic_interpolation",
-    hdrs = ["cc/kernels/cubic_interpolation.h"],
+    hdrs = ["cc/kernels/cubic_interpolation.h",
+    "cc/platform/types.h",
+    "cc/kernels/bspline.h"
+    ],
     copts = ["-Iexternal/eigen"],
     deps = [
         ":types",
