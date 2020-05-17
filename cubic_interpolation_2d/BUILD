@@ -37,7 +37,7 @@ cc_library(
 cc_binary(
     name = 'python/ops/_cubic_interpolation2d_ops.so',
     srcs = [
-        "cc/ops/cubic_interpolation_2d_op.cc",
+        "cc/ops/cubic_interpolation2d_op.cc",
     ],
     linkshared = 1,
     deps = [
