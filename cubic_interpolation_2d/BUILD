@@ -64,7 +64,7 @@ py_library(
         "python/ops/cubic_interpolation_2d_ops.py",
     ]),
     data = [
-        ":python/ops/_zero_out_ops.so"
+        ":python/ops/_cubic_interpolation2d_ops.so"
     ],
     srcs_version = "PY2AND3",
 )
