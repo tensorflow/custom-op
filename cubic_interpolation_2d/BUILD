@@ -57,7 +57,7 @@ cc_binary(
 
 
 py_library(
-    name = "cubic_inerpolation_2d_ops_py",
+    name = "cubic_interpolation_2d_ops_py",
     srcs = ([
         "python/ops/cubic_inerpolation_2d_ops.py",
     ]),
