@@ -12,7 +12,6 @@ cc_library(
     hdrs = ["cc/platform/types.h"],
 )
 
-
 cc_library(
     name = "bspline",
     hdrs = ["cc/kernels/bspline.h"],
@@ -24,43 +23,58 @@ cc_library(
 
 cc_library(
     name = "cubic_interpolation",
-    srcs = ["cc/kernels/cubic_interpolation_kernels.cc"]
-    hdrs = ["cc/kernels/cubic_interpolation.h",
-    "cc/platform/types.h",
-    "cc/kernels/bspline.h",
+    srcs = ["cc/kernels/cubic_interpolation_kernels.cc"],
+    hdrs = [
+        "cc/kernels/bspline.h","cc/kernels/cubic_interpolation.h",
+        "cc/platform/types.h",
     ],
     copts = ["-Iexternal/eigen"],
     deps = [
-        ":types",
         ":bspline",
+        ":types",
         "@eigen",
     ],
 )
 
-
 cc_binary(
-    name = 'python/ops/_cubic_interpolation2d_ops.so',
+    name = "python/ops/_cubic_interpolation2d_ops.so",
     srcs = [
         "cc/ops/cubic_interpolation2d_op.cc",
     ],
-    linkshared = 1,
-    deps = [
-        "@local_config_tf//:libtensorflow_framework",
-        "@local_config_tf//:tf_header_lib",
-        ":types",
-        ":bspline",
-        "@eigen",
-    ],
+    copts = select({
+        ":windows": [
+            "/DEIGEN_STRONG_INLINE=inline",
+            "-DTENSORFLOW_MONOLITHIC_BUILD",
+            "/DPLATFORM_WINDOWS",
+            "/DEIGEN_HAS_C99_MATH",
+            "/DTENSORFLOW_USE_EIGEN_THREADPOOL",
+            "/DEIGEN_AVOID_STL_ARRAY",
+            "/Iexternal/gemmlowp",
+            "/wd4018",
+            "/wd4577",
+            "/DNOGDI",
+            "/UTF_COMPILE_LIBRARY",
+        ],
+        "//conditions:default": [
+            "-pthread",
+            "-std=c++11",
+            "-D_GLIBCXX_USE_CXX11_ABI=0",
+            "-Iexternal/eigen",
+        ],
+    }),
     features = select({
         ":windows": ["windows_export_all_symbols"],
         "//conditions:default": [],
     }),
-    copts = select({
-        ":windows": ["/DEIGEN_STRONG_INLINE=inline", "-DTENSORFLOW_MONOLITHIC_BUILD", "/DPLATFORM_WINDOWS", "/DEIGEN_HAS_C99_MATH", "/DTENSORFLOW_USE_EIGEN_THREADPOOL", "/DEIGEN_AVOID_STL_ARRAY", "/Iexternal/gemmlowp", "/wd4018", "/wd4577", "/DNOGDI", "/UTF_COMPILE_LIBRARY"],
-        "//conditions:default": ["-pthread", "-std=c++11", "-D_GLIBCXX_USE_CXX11_ABI=0", "-Iexternal/eigen"],
-    }),
+    linkshared = 1,
+    deps = [
+        ":bspline",
+        ":types",
+        "@eigen",
+        "@local_config_tf//:libtensorflow_framework",
+        "@local_config_tf//:tf_header_lib",
+    ],
 )
-
 
 py_library(
     name = "cubic_interpolation_2d_ops_py",
@@ -68,11 +82,10 @@ py_library(
         "python/ops/cubic_interpolation_2d_ops.py",
     ]),
     data = [
-        ":python/ops/_cubic_interpolation2d_ops.so"
+        ":python/ops/_cubic_interpolation2d_ops.so",
     ],
     srcs_version = "PY2AND3",
 )
-
 
 py_library(
     name = "cubic_interpolation_2d_py",
@@ -81,8 +94,8 @@ py_library(
         "python/__init__.py",
         "python/ops/__init__.py",
     ]),
-    deps = [
-        ":cubic_interpolation_2d_ops_py"
-    ],
     srcs_version = "PY2AND3",
+    deps = [
+        ":cubic_interpolation_2d_ops_py",
+    ],
 )
