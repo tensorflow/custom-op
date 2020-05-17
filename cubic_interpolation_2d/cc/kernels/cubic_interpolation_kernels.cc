@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "cc/kernels/cubic_interpolation.h"
-#include "cc/types.h"
+#include "cubic_interpolation_2d/cc/kernels/cubic_interpolation.h"
+#include "cubic_interpolation_2d/cc/types.h"
 #include "tensorflow/core/framework/op_kernel.h"
 #include "tensorflow/core/framework/shape_inference.h"
 
