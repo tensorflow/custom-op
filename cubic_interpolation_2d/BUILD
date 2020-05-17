@@ -61,7 +61,7 @@ cc_binary(
 py_library(
     name = "cubic_interpolation_2d_ops_py",
     srcs = ([
-        "python/ops/cubic_inerpolation_2d_ops.py",
+        "python/ops/cubic_interpolation_2d_ops.py",
     ]),
     data = [
         ":python/ops/_zero_out_ops.so"
