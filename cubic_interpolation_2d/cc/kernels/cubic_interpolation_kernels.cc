@@ -52,7 +52,7 @@ bool ValidateInputForDim(OpKernelContext* context, int dim, const Tensor& input,
 bool ValidateInput(OpKernelContext* context, const Tensor& input,
                    const std::vector<int32>& factors,
                    const std::vector<int32>& output_spatial_shape) {
-  for (int d = 0; d < factors.size(); ++d) {
+  for (unsigned int d = 0; d < factors.size(); ++d) {
     if (!ValidateInputForDim(context, d, input, factors[d],
                              output_spatial_shape[d])) {
       return false;

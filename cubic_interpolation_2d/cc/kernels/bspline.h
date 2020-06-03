@@ -201,7 +201,7 @@ inline void CubicBSplineInterpolationCentered(
       float w1 = in.data[in_offs + in.stride_elem];
       float w2 = in.data[in_offs + 2 * in.stride_elem];
       float w3 = in.data[in_offs + 3 * in.stride_elem];
-      for (int i = start_kernel_index; i < kernels.size(); ++i) {
+      for (unsigned int i = start_kernel_index; i < kernels.size(); ++i) {
         const BSplineKernel& k = kernels[i];
         *out_p = w0 * k.b0 + w1 * k.b1 + w2 * k.b2 + w3 * k.b3;
         out_p += out.stride_elem;

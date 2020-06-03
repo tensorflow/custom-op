@@ -99,3 +99,14 @@ py_library(
         ":cubic_interpolation_2d_ops_py",
     ],
 )
+
+py_test(
+    name = "cubic_interpolation_2d_ops_test",
+    srcs = [
+        "python/ops/cubic_interpolation_2d_ops_test.py"
+    ],
+    deps = [
+        ":cubic_interpolation_2d_py",
+    ],
+    srcs_version = "PY2AND3",
+)
