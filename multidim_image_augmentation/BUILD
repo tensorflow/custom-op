@@ -113,18 +113,18 @@ cc_binary(
 
 
 py_library(
-    name = "cubic_interpolation_2d_ops_py",
+    name = "augmentation_ops_py",
     srcs = ([
-        "python/ops/cubic_interpolation_2d_ops.py",
+        "python/ops/augmentation_ops.py",
     ]),
     data = [
-        ":python/ops/_cubic_interpolation2d_ops.so",
+        ":python/ops/_augmentation_ops.so",
     ],
     srcs_version = "PY2AND3",
 )
 
 py_library(
-    name = "cubic_interpolation_2d_py",
+    name = "augmentation_ops_py_package",
     srcs = ([
         "__init__.py",
         "python/__init__.py",
@@ -132,17 +132,6 @@ py_library(
     ]),
     srcs_version = "PY2AND3",
     deps = [
-        ":cubic_interpolation_2d_ops_py",
+        ":augmentation_ops_py",
     ],
-)
-
-py_test(
-    name = "cubic_interpolation_2d_ops_test",
-    srcs = [
-        "python/ops/cubic_interpolation_2d_ops_test.py"
-    ],
-    deps = [
-        ":cubic_interpolation_2d_py",
-    ],
-    srcs_version = "PY2AND3",
 )

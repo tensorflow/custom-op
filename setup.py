@@ -25,9 +25,9 @@ from setuptools.dist import Distribution
 
 __version__ = '0.0.1'
 REQUIRED_PACKAGES = [
-    'tensorflow >= 2.1.0',
+    'tensorflow >= 1.15.0',
 ]
-project_name = 'tensorflow-custom-ops'
+project_name = 'multidim_image_augmentation'
 
 
 from setuptools.command.install import install
@@ -49,9 +49,9 @@ class BinaryDistribution(Distribution):
 setup(
     name=project_name,
     version=__version__,
-    description=('tensorflow-custom-ops is an examples for custom ops for TensorFlow'),
-    author='Google Inc.',
-    author_email='opensource@google.com',
+    description=('Pip installable fork of https://github.com/deepmind/multidim-image-augmentation'),
+    author='Diego Ardila',
+    author_email='diego@captionhealth.com',
     # Contained modules and scripts.
     packages=find_packages(),
     install_requires=REQUIRED_PACKAGES,

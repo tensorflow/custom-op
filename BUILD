@@ -5,6 +5,6 @@ sh_binary(
         "LICENSE",
         "MANIFEST.in",
         "setup.py",
-        "//cubic_interpolation_2d:cubic_interpolation_2d_py",
+        "//multidim_image_augmentation:augmentation_ops_py_package",
     ],
 )
