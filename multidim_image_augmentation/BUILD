@@ -23,23 +23,61 @@ cc_library(
 
 cc_library(
     name = "cubic_interpolation",
-    srcs = ["cc/kernels/cubic_interpolation_kernels.cc"],
-    hdrs = [
-        "cc/kernels/bspline.h","cc/kernels/cubic_interpolation.h",
-        "cc/platform/types.h",
-    ],
-    copts = ["-Iexternal/eigen"],
+    hdrs = ["cc/kernels/cubic_interpolation.h"],
     deps = [
         ":bspline",
-        ":types",
         "@eigen",
     ],
 )
 
-cc_binary(
-    name = "python/ops/_cubic_interpolation2d_ops.so",
+cc_library(
+    name = "ops_hdrs",
+    hdrs = ["cc/ops/apply_deformation_ops.h"],
+)
+
+cc_library(
+    name = "apply_deformation",
+    hdrs = ["cc/kernels/apply_deformation.h"],
+    deps = [
+        ":types",
+        "@local_config_tf//:libtensorflow_framework",
+        "@local_config_tf//:tf_header_lib",
+        "@eigen",
+    ],
+)
+
+
+cc_library(
+    name = "augmentation_ops_kernels",
     srcs = [
+        "cc/kernels/apply_deformation_ops.cc",
+        "cc/kernels/apply_tabulated_functions_op.cc",
+        "cc/kernels/cubic_interpolation_ops.cc",
+        "cc/kernels/random_lut_controlpoints_op.cc",
+    ],
+    hdrs = ["cc/ops/apply_deformation_ops.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":apply_deformation",
+        ":cubic_interpolation",
+        ":ops_hdrs",
+        ":types",
+        "@local_config_tf//:libtensorflow_framework",
+        "@local_config_tf//:tf_header_lib",
+        "@eigen",
+    ],
+    alwayslink = 1,
+)
+
+cc_binary(
+    name = "python/ops/_augmentation_ops.so",
+    srcs = [
+        "cc/ops/apply_deformation_ops.cc",
+        "cc/ops/apply_tabulated_functions_op.cc",
+        "cc/ops/cubic_interpolation1d_op.cc",
         "cc/ops/cubic_interpolation2d_op.cc",
+        "cc/ops/cubic_interpolation3d_op.cc",
+        "cc/ops/random_lut_controlpoints_op.cc",
     ],
     copts = select({
         ":windows": [
@@ -68,13 +106,11 @@ cc_binary(
     }),
     linkshared = 1,
     deps = [
-        ":bspline",
+        ":augmentation_ops_kernels",
         ":types",
-        "@eigen",
-        "@local_config_tf//:libtensorflow_framework",
-        "@local_config_tf//:tf_header_lib",
     ],
 )
+
 
 py_library(
     name = "cubic_interpolation_2d_ops_py",

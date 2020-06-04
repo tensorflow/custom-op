@@ -14,7 +14,7 @@
 
 #include <vector>
 
-#include "cubic_interpolation_2d/cc/platform/types.h"
+#include "multidim_image_augmentation/cc/platform/types.h"
 #include "tensorflow/core/framework/op.h"
 #include "tensorflow/core/framework/shape_inference.h"
 
@@ -70,28 +70,34 @@ REGISTER_OP("CubicInterpolation2D")
     })
     .Doc(R"doc(
 Performs a 2D fast cubic b-spline interpolation (upscaling).
+
 Performs a 2D fast cubic b-spline interpolation (can be interpreted as smooth
 upsampling with the integer factors given in `factors`) where the centers of
 the control point array and the dense output array are aligned. Be aware that
 the resulting function usually does _not_ pass through the control points. Due
 to the centering certain restrictions apply on the number of control points and
 the scaling factors. See `cubic_interpolation1d` for details.
+
 ```
 Usage example:
+
 ```python
 from multidim_image_augmentation import augmentation_ops
 with tf.Session():
   grid = np.ndarray([5, 5, 2], dtype=np.float32)
   # Fill in some values.
   # ...
+
   # Do the bspline interpolation.
   dense = augmentation_ops.cubic_interpolation_2d(
       input=grid, factors=[10, 10], output_spatial_shape=[21, 21]).eval()
 ```
+
 input:= A 3-D float Tensor with shape `[spatial_shape_0, spatial_shape_1,
 num_channels]`.
 factors: Scaling factors.
 output_spatial_shape: The spatial shape of the output tensor.
+
 output: 3-D with shape `[output_spatial_shape_0, output_spatial_shape_1,
 channels]`
 )doc");

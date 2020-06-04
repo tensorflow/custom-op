@@ -17,8 +17,8 @@
 // smooth upsampling by an integer factor N. Be aware that the resulting
 // function usually does _not_ pass through the control points.
 
-#ifndef CC_KERNELS_BSPLINE_H_
-#define CC_KERNELS_BSPLINE_H_
+#ifndef MULTIDIM_IMAGE_AUGMENTATION_KERNELS_BSPLINE_H_
+#define MULTIDIM_IMAGE_AUGMENTATION_KERNELS_BSPLINE_H_
 
 #include <vector>
 
@@ -201,7 +201,7 @@ inline void CubicBSplineInterpolationCentered(
       float w1 = in.data[in_offs + in.stride_elem];
       float w2 = in.data[in_offs + 2 * in.stride_elem];
       float w3 = in.data[in_offs + 3 * in.stride_elem];
-      for (unsigned int i = start_kernel_index; i < kernels.size(); ++i) {
+      for (int i = start_kernel_index; i < kernels.size(); ++i) {
         const BSplineKernel& k = kernels[i];
         *out_p = w0 * k.b0 + w1 * k.b1 + w2 * k.b2 + w3 * k.b3;
         out_p += out.stride_elem;
@@ -229,4 +229,4 @@ inline void CubicBSplineInterpolationCentered(
 }  // namespace multidim_image_augmentation
 }  // namespace deepmind
 
-#endif  // CC_KERNELS_BSPLINE_H_
+#endif  // MULTIDIM_IMAGE_AUGMENTATION_KERNELS_BSPLINE_H_
