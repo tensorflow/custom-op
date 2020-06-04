@@ -1,2 +1,3 @@
 recursive-include tensorflow_zero_out *.so
 recursive-include tensorflow_time_two *.so
+recursive-include cubic_interpolation_2d *.so

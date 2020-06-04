@@ -68,6 +68,8 @@ function main() {
   cp ${PIP_FILE_PREFIX}MANIFEST.in "${TMPDIR}"
   cp ${PIP_FILE_PREFIX}LICENSE "${TMPDIR}"
   rsync -avm -L --exclude='*_test.py' ${PIP_FILE_PREFIX}cubic_interpolation_2d "${TMPDIR}"
+  #rsync -avm -L --exclude='*_test.py' ${PIP_FILE_PREFIX}tensorflow_time_two "${TMPDIR}"
+  #rsync -avm -L --exclude='*_test.py' ${PIP_FILE_PREFIX}temsorflow_zero_out "${TMPDIR}"
 
   pushd ${TMPDIR}
   echo $(date) : "=== Building wheel"
@@ -76,7 +78,7 @@ function main() {
 
   cp dist/*.whl "${DEST}"
   popd
-  rm -rf ${TMPDIR}
+  #rm -rf ${TMPDIR}
   echo $(date) : "=== Output wheel file is in: ${DEST}"
 }
 
