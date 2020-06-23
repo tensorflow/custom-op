@@ -1,3 +1,32 @@
+# HOW TO USE MULTIDIM_IMAGE_AUGMENTATION
+Need to install bazel first [https://bazel.build/]
+
+To build:
+```bash
+  ./configure.sh
+  bazel build build_pip_pkg
+  bazel-bin/build_pip_pkg artifacts
+```
+
+To install
+```bash
+pip install artifacts/*.whl
+```
+
+To import
+```python
+import multidim_image_augmentation
+```
+
+For example python code wrapping this op, and usage examples, see the original repo here:
+[https://github.com/deepmind/multidim-image-augmentation/tree/master/doc]
+
+
+
+
+
+
+
 # TensorFlow Custom Op
 This is a guide for users who want to write custom c++ op for TensorFlow and distribute the op as a pip package. This repository serves as both a working example of the op building and packaging process, as well as a template/starting point for writing your own ops. The way this repository is set up allow you to build your custom ops from TensorFlow's pip package instead of building TensorFlow from scratch. This guarantee that the shared library you build will be binary compatible with TensorFlow's pip packages.
 
