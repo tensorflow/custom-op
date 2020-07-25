@@ -66,12 +66,12 @@ With Makefile:
 ### Install and Test PIP Package
 Once the pip package has been built, you can install it with,
 ```bash
-pip install artifacts/*.whl
+pip3 install artifacts/*.whl
 ```
 Then test out the pip package
 ```bash
 cd ..
-python -c "import tensorflow as tf;import tensorflow_zero_out;print(tensorflow_zero_out.zero_out([[1,2], [3,4]]))"
+python3 -c "import tensorflow as tf;import tensorflow_zero_out;print(tensorflow_zero_out.zero_out([[1,2], [3,4]]))"
 ```
 And you should see the op zeroed out all input elements except the first one:
 ```bash
@@ -321,8 +321,8 @@ make pip_pkg
 ### Test PIP Package
 Before publishing your pip package, test your pip package.
 ```bash
-pip install artifacts/*.whl
-python -c "import tensorflow as tf;import tensorflow_zero_out;print(tensorflow_zero_out.zero_out([[1,2], [3,4]]))"
+pip3 install artifacts/*.whl
+python3 -c "import tensorflow as tf;import tensorflow_zero_out;print(tensorflow_zero_out.zero_out([[1,2], [3,4]]))"
 ```
 
 
