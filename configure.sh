@@ -95,14 +95,14 @@ if [[ "$TF_NEED_CUDA" == "0" ]]; then
     # Uninstall GPU version if it is installed.
     if [[ $(${PIP} show tensorflow-gpu) == *tensorflow-gpu* ]]; then
       echo 'Already have gpu version of tensorflow installed. Uninstalling......\n'
-      pip uninstall tensorflow-gpu
+      ${PIP} uninstall tensorflow-gpu
     elif [[ $(${PIP} show tf-nightly-gpu) == *tf-nightly-gpu* ]]; then
       echo 'Already have gpu version of tensorflow installed. Uninstalling......\n'
-      pip uninstall tf-nightly-gpu
+      ${PIP} uninstall tf-nightly-gpu
     fi
     # Install CPU version
     echo 'Installing tensorflow......\n'
-    pip install tensorflow
+    ${PIP} install tensorflow
   fi
 
 else
