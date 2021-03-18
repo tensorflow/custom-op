@@ -142,6 +142,12 @@ write_to_bazelrc "build --spawn_strategy=standalone"
 write_to_bazelrc "build --strategy=Genrule=standalone"
 write_to_bazelrc "build -c opt"
 
+# MSVC (Windows): Standards-conformant preprocessor mode
+# See https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview
+if is_windows; then
+  write_to_bazelrc "build --copt=/experimental:preprocessor"
+  write_to_bazelrc "build --host_copt=/experimental:preprocessor"
+fi
 
 if is_windows; then
   # Use pywrap_tensorflow instead of tensorflow_framework on Windows
