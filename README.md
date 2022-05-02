@@ -42,7 +42,7 @@ And the following instead if it is manylinux2010 compatible:
   docker run -it tensorflow/tensorflow:custom-op-ubuntu16 /bin/bash
 ```
 
-Inside the Docker container, clone this repository. The code in this repository came from the [Adding an op](https://www.tensorflow.org/extend/adding_an_op) guide.
+Inside the Docker container, clone this repository. The code in this repository came from the [Create an op](https://www.tensorflow.org/guide/create_op) guide.
 ```bash
 git clone https://github.com/tensorflow/custom-op.git
 cd custom-op
@@ -194,7 +194,7 @@ Last step before starting implementing the ops, you want to set up the build env
 
 
 ### Add Op Implementation
-Now you are ready to implement your op. Following the instructions at [Adding a New Op](https://www.tensorflow.org/extend/adding_an_op), add definition of your op interface under `<your_op>/cc/ops/` and kernel implementation under `<your_op>/cc/kernels/`.
+Now you are ready to implement your op. Add definition of your op interface under `<your_op>/cc/ops/` and kernel implementation under `<your_op>/cc/kernels/`.
 
 
 ### Build and Test CPU Op
@@ -220,7 +220,7 @@ make op
 ```
 
 #### Extend and Test the Op in Python
-Once you have built your custom op shared library, you can follow the example in [`tensorflow_zero_out/python/ops`](https://github.com/tensorflow/custom-op/tree/master/tensorflow_zero_out/python/ops), and instructions [here](https://www.tensorflow.org/extend/adding_an_op#use_the_op_in_python) to create a module in Python for your op. Both guides use TensorFlow API `tf.load_op_library`, which loads the shared library and registers the ops with the TensorFlow framework.
+Once you have built your custom op shared library, you can follow the example in [`tensorflow_zero_out/python/ops`](https://github.com/tensorflow/custom-op/tree/master/tensorflow_zero_out/python/ops), and instructions [here](https://www.tensorflow.org/guide/create_op#use_the_op_in_python) to create a module in Python for your op. Both guides use TensorFlow API `tf.load_op_library`, which loads the shared library and registers the ops with the TensorFlow framework.
 ```python
 from tensorflow.python.framework import load_library
 from tensorflow.python.platform import resource_loader
@@ -272,7 +272,7 @@ make time_two_op
 ```
 
 #### Extend and Test the Op in Python
-Once you have built your custom op shared library, you can follow the example in [`tensorflow_time_two/python/ops`](https://github.com/tensorflow/custom-op/tree/master/tensorflow_time_two/python/ops), and instructions [here](https://www.tensorflow.org/extend/adding_an_op#use_the_op_in_python) to create a module in Python for your op. This part is the same as CPU custom op as shown above.
+Once you have built your custom op shared library, you can follow the example in [`tensorflow_time_two/python/ops`](https://github.com/tensorflow/custom-op/tree/master/tensorflow_time_two/python/ops), and instructions [here](https://www.tensorflow.org/guide/create_op#use_the_op_in_python) to create a module in Python for your op. This part is the same as CPU custom op as shown above.
 
 
 ##### Run Tests with Bazel
