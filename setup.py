@@ -23,9 +23,9 @@ from setuptools import setup
 from setuptools.dist import Distribution
 
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 REQUIRED_PACKAGES = [
-    'tensorflow >= 2.1.0',
+    'tensorflow == 2.11.0',
 ]
 project_name = 'tensorflow-custom-ops'
 
