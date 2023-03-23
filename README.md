@@ -1,12 +1,12 @@
 # TensorFlow Custom Op
-This is a guide for users who want to write custom c++ op for TensorFlow and distribute the op as a pip package. This repository serves as both a working example of the op building and packaging process, as well as a template/starting point for writing your own ops. The way this repository is set up allow you to build your custom ops from TensorFlow's pip package instead of building TensorFlow from scratch. This guarantee that the shared library you build will be binary compatible with TensorFlow's pip packages.
+This is a guide for users who want to write custom c++ op for TensorFlow and distribute the op as a pip package. This repository serves as both a working example of the op building and packaging process, as well as a template/starting point for writing your own ops. The way this repository is set up allows you to build your custom ops from TensorFlow's pip package instead of building TensorFlow from scratch. This guarantee that the shared library you build will be binary compatible with TensorFlow's pip packages.
 
 This guide currently supports Ubuntu and Windows custom ops, and it includes examples for both cpu and gpu ops.
 
 Starting from Aug 1, 2019, nightly previews `tf-nightly` and `tf-nightly-gpu`, as well as
 official releases `tensorflow` and `tensorflow-gpu` past version 1.14.0 are now built with a
-different environment (Ubuntu 16.04 compared to Ubuntu 14.04, for example) as part of our effort to make TensorFlow's pip pacakges
-manylinux2010 compatible. To help you building custom ops on linux, here we provide our toolchain in the format of a combination of a Docker image and bazel configurations.  Please check the table below for the Docker image name needed to build your custom ops.
+different environment (Ubuntu 16.04 compared to Ubuntu 14.04, for example) as part of our effort to make TensorFlow's pip packages
+manylinux2010 compatible. To help you build custom ops on Linux, here we provide our toolchain in the format of a combination of a Docker image and bazel configurations.  Please check the table below for the Docker image name needed to build your custom ops.
 
 |          |          CPU custom op          |          GPU custom op         |
 |----------|:-------------------------------:|:------------------------------:|
@@ -42,7 +42,7 @@ And the following instead if it is manylinux2010 compatible:
   docker run -it tensorflow/tensorflow:custom-op-ubuntu16 /bin/bash
 ```
 
-Inside the Docker container, clone this repository. The code in this repository came from the [Adding an op](https://www.tensorflow.org/extend/adding_an_op) guide.
+Inside the Docker container, clone this repository. The code in this repository came from the [Adding an op](https://www.tensorflow.org/guide/create_op) guide.
 ```bash
 git clone https://github.com/tensorflow/custom-op.git
 cd custom-op
@@ -142,7 +142,7 @@ First let's go through a quick overview of the folder structure of this template
 └── WORKSPACE  # Used by Bazel to specify tensorflow pip package as an external dependency
 
 ```
-The op implementation, including both c++ and python code, goes under `tensorflow_zero_out` dir for CPU only ops, or `tensorflow_time_two` dir for GPU ops. You will want to replace either directory with the corresponding content of your own ops. `tf` folder contains the code for setting up TensorFlow pip package as an external dependency for Bazel only. You shouldn't need to change the content of this folder. You also don't need this folder if you are using other build systems, such as Makefile. The `gpu` folder contains the code for setting up CUDA libraries and toolchain. You only need the `gpu` folder if you are writing a GPU op and using bazel. To build a pip package for your op, you will also need to update a few files at the top level of the template, for example, `setup.py`, `MANIFEST.in` and `build_pip_pkg.sh`.
+The op implementation, including both c++ and python code, goes under `tensorflow_zero_out` dir for CPU only ops, or `tensorflow_time_two` dir for GPU ops. You will want to replace either directory with the corresponding content of your own ops. `tf` folder contains the code for setting up TensorFlow pip package as an external dependency for Bazel only. You shouldn't need to change the content of this folder. You also don't need this folder if you are using other build systems, such as Makefile. The `gpu` folder contains the code for setting up CUDA libraries and toolchains. You only need the `gpu` folder if you are writing a GPU op and using bazel. To build a pip package for your op, you will also need to update a few files at the top level of the template, for example, `setup.py`, `MANIFEST.in` and `build_pip_pkg.sh`.
 
 ### Setup
 First, clone this template repo.
@@ -152,7 +152,7 @@ cd my_op
 ```
 
 #### Docker
-Next, set up a Docker container using the provided Docker image for building and testing the ops. We provide two sets of Docker images for different versions of pip packages. If the pip package you are building against was released before Aug 1, 2019 and has manylinux1 tag, please use Docker images `tensorflow/tensorflow:custom-op-ubuntu14` and `tensorflow/tensorflow:custom-op-gpu-ubuntu14`, which are based on Ubuntu 14.04. Otherwise, for the newer manylinux2010 packages, please use Docker images `tensorflow/tensorflow:custom-op-ubuntu16` and `tensorflow/tensorflow:custom-op-gpu-ubuntu16` instead. All Docker images come with Bazel pre-installed, as well as the corresponding toolchain used for building the released TensorFlow pacakges. We have seen many cases where dependency version differences and ABI incompatibilities cause the custom op extension users build to not work properly with TensorFlow's released pip packages. Therefore, it is *highly recommended* to use the provided Docker image to build your custom op. To get the CPU Docker image, run one of the following command based on which pip package you are building against:
+Next, set up a Docker container using the provided Docker image for building and testing the ops. We provide two sets of Docker images for different versions of pip packages. If the pip package you are building against was released before Aug 1, 2019 and has manylinux1 tag, please use Docker images `tensorflow/tensorflow:custom-op-ubuntu14` and `tensorflow/tensorflow:custom-op-gpu-ubuntu14`, which are based on Ubuntu 14.04. Otherwise, for the newer manylinux2010 packages, please use Docker images `tensorflow/tensorflow:custom-op-ubuntu16` and `tensorflow/tensorflow:custom-op-gpu-ubuntu16` instead. All Docker images come with Bazel pre-installed, as well as the corresponding toolchain used for building the released TensorFlow packages. We have seen many cases where dependency version differences and ABI incompatibilities cause the custom op extension users build to not work properly with TensorFlow's released pip packages. Therefore, it is *highly recommended* to use the provided Docker image to build your custom op. To get the CPU Docker image, run one of the following command based on which pip package you are building against:
 ```bash
 # For pip packages labeled manylinux1
 docker pull tensorflow/tensorflow:custom-op-ubuntu14
@@ -194,7 +194,7 @@ Last step before starting implementing the ops, you want to set up the build env
 
 
 ### Add Op Implementation
-Now you are ready to implement your op. Following the instructions at [Adding a New Op](https://www.tensorflow.org/extend/adding_an_op), add definition of your op interface under `<your_op>/cc/ops/` and kernel implementation under `<your_op>/cc/kernels/`.
+Now you are ready to implement your op. Following the instructions at [Adding a New Op](https://www.tensorflow.org/guide/create_op), add definition of your op interface under `<your_op>/cc/ops/` and kernel implementation under `<your_op>/cc/kernels/`.
 
 
 ### Build and Test CPU Op
