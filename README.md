@@ -42,7 +42,7 @@ And the following instead if it is manylinux2010 compatible:
   docker run -it tensorflow/tensorflow:custom-op-ubuntu16 /bin/bash
 ```
 
-Inside the Docker container, clone this repository. The code in this repository came from the [Adding an op](https://www.tensorflow.org/extend/adding_an_op) guide.
+Inside the Docker container, clone this repository. The code in this repository came from the [Adding an op](https://www.tensorflow.org/guide/create_op) guide.
 ```bash
 git clone https://github.com/tensorflow/custom-op.git
 cd custom-op
@@ -194,7 +194,7 @@ Last step before starting implementing the ops, you want to set up the build env
 
 
 ### Add Op Implementation
-Now you are ready to implement your op. Following the instructions at [Adding a New Op](https://www.tensorflow.org/extend/adding_an_op), add definition of your op interface under `<your_op>/cc/ops/` and kernel implementation under `<your_op>/cc/kernels/`.
+Now you are ready to implement your op. Following the instructions at [Adding a New Op](https://www.tensorflow.org/guide/create_op), add definition of your op interface under `<your_op>/cc/ops/` and kernel implementation under `<your_op>/cc/kernels/`.
 
 
 ### Build and Test CPU Op
